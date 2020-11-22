@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.framework.util.FTCRuntimeHandler;
 
-public class DeadzonedStick {
+public class DeadzonedController {
     private OpMode currentOpMode = FTCRuntimeHandler.getOpMode();
     private int controllerNum;
     private double deadzone;
 
-    DeadzonedStick(int controllerNum, double deadzone) {
+    public DeadzonedController(int controllerNum, double deadzone) {
         this.controllerNum = controllerNum;
         this.deadzone = deadzone;
     }
@@ -18,7 +18,7 @@ public class DeadzonedStick {
         return (Math.sqrt(Math.pow(axis1, 2) + Math.pow(axis2, 2)));
     }
 
-    public double GetLeftXAxis() {
+    public double getLeftXAxis() {
         switch (controllerNum) {
             case 1:
                 if (GetHypotenuse(currentOpMode.gamepad1.left_stick_x, currentOpMode.gamepad1.left_stick_y) <= deadzone) {
@@ -38,7 +38,7 @@ public class DeadzonedStick {
         return 0;
     }
 
-    public double GetLeftYAxis() {
+    public double getLeftYAxis() {
         switch (controllerNum) {
             case 1:
                 if (GetHypotenuse(currentOpMode.gamepad1.left_stick_x, currentOpMode.gamepad1.left_stick_y) <= deadzone) {
@@ -58,7 +58,7 @@ public class DeadzonedStick {
         return 0;
     }
 
-    public double GetRightXAxis() {
+    public double getRightXAxis() {
         switch (controllerNum) {
             case 1:
                 if (GetHypotenuse(currentOpMode.gamepad1.right_stick_x, currentOpMode.gamepad1.right_stick_y) <= deadzone) {
@@ -78,7 +78,7 @@ public class DeadzonedStick {
         return 0;
     }
 
-    public double GetRightYAxis() {
+    public double getRightYAxis() {
         switch (controllerNum) {
             case 1:
                 if (GetHypotenuse(currentOpMode.gamepad1.right_stick_x, currentOpMode.gamepad1.right_stick_y) <= deadzone) {

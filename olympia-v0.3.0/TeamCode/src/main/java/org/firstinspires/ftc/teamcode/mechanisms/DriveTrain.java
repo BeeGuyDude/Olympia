@@ -5,15 +5,18 @@ import org.firstinspires.ftc.teamcode.mechanisms.devicehandlers.DCMotorHandler;
 
 public class DriveTrain extends Mechanism {
 
-    private DCMotorHandler leftMotor = new DCMotorHandler("left", false);
-    private DCMotorHandler rightMotor = new DCMotorHandler("left", false);
+    private DCMotorHandler leftMotor;
+    private DCMotorHandler rightMotor;
 
     private DriveTrain() {
         registerSelf();
     }
 
     @Override
-    void init() {}
+    void init() {
+        leftMotor = new DCMotorHandler("left", false);
+        rightMotor = new DCMotorHandler("left", false);
+    }
 
     @Override
     public void run() {

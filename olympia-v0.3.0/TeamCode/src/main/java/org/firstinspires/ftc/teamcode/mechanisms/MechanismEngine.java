@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import org.firstinspires.ftc.teamcode.framework.util.FTCRuntimeHandler;
+import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+
 import java.util.concurrent.ThreadFactory;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,10 +39,17 @@ public class MechanismEngine implements ThreadFactory {
     }
 
     public void initializeMechanisms() {
-        if ()
-        for (Mechanism mechanism : MechanismIndex) {
-            newThread(mechanism).start();
+        switch(FTCRuntimeHandler.currentOpModeType) {
+            case TELEOP:
+                for (Mechanism mechanism : MechanismIndex) {
+                    newThread(mechanism).start();
+                }
+                break;
+            case AUTO:
+
+                break;
         }
+
     }
 
     public void addMechanism(Mechanism inputMechanism) {

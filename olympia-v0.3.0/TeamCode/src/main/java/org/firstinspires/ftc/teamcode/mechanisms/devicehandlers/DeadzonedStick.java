@@ -37,7 +37,7 @@ public class DeadzonedStick {
         }
         return 0;
     }
-    
+
     public double GetLeftYAxis() {
         switch (controllerNum) {
             case 1:

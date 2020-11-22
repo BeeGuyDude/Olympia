@@ -15,7 +15,7 @@ public class DriveTrain extends Mechanism {
     @Override
     void init() {
         leftMotor = new DCMotorHandler("left", false);
-        rightMotor = new DCMotorHandler("left", false);
+        rightMotor = new DCMotorHandler("right", true);
     }
 
     @Override

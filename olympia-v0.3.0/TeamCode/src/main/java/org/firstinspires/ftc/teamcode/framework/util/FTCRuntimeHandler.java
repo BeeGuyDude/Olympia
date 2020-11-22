@@ -6,19 +6,25 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+
 public class FTCRuntimeHandler {
     private static HardwareMap hardwareMap;
     private static OpMode opMode;
     private static Telemetry telemetry;
 
-    public static HardwareMap getHardwareMap() {
-        return hardwareMap;
-    }
+    public static OpModeType currentOpModeType;
 
-    public static void setOpMode(OpMode opMode) {
+    public static void setOpMode(OpMode opMode, OpModeType type) {
         FTCRuntimeHandler.opMode = opMode;
         FTCRuntimeHandler.hardwareMap = opMode.hardwareMap;
         FTCRuntimeHandler.telemetry = opMode.telemetry;
+
+        currentOpModeType = type;
+    }
+
+    public static HardwareMap getHardwareMap() {
+        return hardwareMap;
     }
 
     public static OpMode getOpMode() {

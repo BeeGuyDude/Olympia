@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import java.util.concurrent.ThreadFactory;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class MechanismEngine implements ThreadFactory {
@@ -19,28 +20,29 @@ public class MechanismEngine implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(Runnable r) {
-        return new Thread(r) {
-            @Override
-            public void run() {
-                while (MechanismEngine.getInstance().robotRunning) {
-                    try {
-
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
+    public Thread newThread(Runnable inputMechanism) {
+        return new Thread(inputMechanism) {
+//            @Override
+//            public void run() {
+//                while (MechanismEngine.getInstance().robotRunning) {
+//                    try {
+//
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
+//            }
         };
+    }
+
+    public void initializeMechanisms() {
+        if ()
+        for (Mechanism mechanism : MechanismIndex) {
+            newThread(mechanism).start();
+        }
     }
 
     public void addMechanism(Mechanism inputMechanism) {
         MechanismIndex.add(inputMechanism);
-    }
-
-    public void initializeMechanisms() {
-        for (Mechanism mechanism : MechanismIndex) {
-            newThread(mechanism).start();
-        }
     }
 }

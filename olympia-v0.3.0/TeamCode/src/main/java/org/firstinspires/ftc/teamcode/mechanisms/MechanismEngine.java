@@ -24,18 +24,7 @@ public class MechanismEngine implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable inputMechanism) {
-        return new Thread(inputMechanism) {
-//            @Override
-//            public void run() {
-//                while (MechanismEngine.getInstance().robotRunning) {
-//                    try {
-//
-//                    } catch (Exception e) {
-//
-//                    }
-//                }
-//            }
-        };
+        return new Thread(inputMechanism) {};
     }
 
     public void initializeMechanisms() {
@@ -46,7 +35,9 @@ public class MechanismEngine implements ThreadFactory {
                 }
                 break;
             case AUTO:
-
+                for (Mechanism mechanism : MechanismIndex) {
+                    mechanism.init();
+                }
                 break;
         }
 

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.framework.util.FTCRuntimeHandler;
 
 public class DeadzonedController {
-    private OpMode currentOpMode = FTCRuntimeHandler.getOpMode();
+    private OpMode currentOpMode = FTCRuntimeHandler.getInstance().getOpMode();
     private int controllerNum;
     private double deadzone;
 

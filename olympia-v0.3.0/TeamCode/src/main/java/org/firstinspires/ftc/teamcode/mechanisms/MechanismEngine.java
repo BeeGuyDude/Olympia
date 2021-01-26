@@ -28,9 +28,10 @@ public class MechanismEngine implements ThreadFactory {
     }
 
     public void initializeMechanisms() {
-        switch(FTCRuntimeHandler.currentOpModeType) {
+        switch(FTCRuntimeHandler.getInstance().currentOpModeType) {
             case TELEOP:
                 for (Mechanism mechanism : MechanismIndex) {
+
                     newThread(mechanism).start();
                 }
                 break;

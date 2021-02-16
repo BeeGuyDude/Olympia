@@ -28,6 +28,8 @@ public class MechanismEngine implements ThreadFactory {
     }
 
     public void initializeMechanisms() {
+        FTCRuntimeHandler.getInstance().getTelemetry().addLine("Beginning Mechanism Initialization:");
+
         switch(FTCRuntimeHandler.getInstance().currentOpModeType) {
             case TELEOP:
                 for (Mechanism mechanism : MechanismIndex) {
@@ -42,9 +44,12 @@ public class MechanismEngine implements ThreadFactory {
                 break;
         }
 
+        FTCRuntimeHandler.getInstance().getTelemetry().addLine("End of Mechanism Initialization.");
+
     }
 
     public void addMechanism(Mechanism inputMechanism) {
         MechanismIndex.add(inputMechanism);
     }
+    
 }

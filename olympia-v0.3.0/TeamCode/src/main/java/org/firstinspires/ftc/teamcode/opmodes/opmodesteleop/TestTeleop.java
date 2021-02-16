@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-public class TestTeleop {
-}
+@TeleOp
+public class TestTeleop extends AbstractTeleOpMode {}
+

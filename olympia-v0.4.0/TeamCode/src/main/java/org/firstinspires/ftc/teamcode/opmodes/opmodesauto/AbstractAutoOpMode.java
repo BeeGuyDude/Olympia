@@ -1,21 +1,22 @@
-package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
+package org.firstinspires.ftc.teamcode.opmodes.opmodesauto;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.framework.util.FTCRuntimeHandler;
 import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
-@TeleOp
-abstract public class AbstractTeleOpMode extends OpMode {
+@Autonomous
+public class AbstractAutoOpMode extends OpMode {
 
     @Override
     public void init() {
-        FTCRuntimeHandler.setOpMode(this, OpModeType.TELEOP);
 
         MechanismEngine.getInstance().robotRunning = true;
-        MechanismEngine.getInstance().initializeMechanisms();
+
+        telemetry.addData("bruh moment", "indeed");
+
+
     }
 
     public void loop() {}

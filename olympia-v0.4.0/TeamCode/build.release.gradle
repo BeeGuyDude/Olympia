@@ -8,7 +8,7 @@ dependencies {
 
     allprojects {
         repositories {
-            maven { url 'https://github.com/ronmamo/reflections' }
+            maven { url 'https://github.com/aschoerk/reflections8' }
         }
     }
 

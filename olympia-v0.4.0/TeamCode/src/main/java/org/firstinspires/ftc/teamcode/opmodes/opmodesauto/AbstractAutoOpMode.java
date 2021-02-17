@@ -12,8 +12,6 @@ public class AbstractAutoOpMode extends OpMode {
     @Override
     public void init() {
 
-        MechanismEngine.getInstance().robotRunning = true;
-
         telemetry.addData("bruh moment", "indeed");
 
 
@@ -22,7 +20,5 @@ public class AbstractAutoOpMode extends OpMode {
     public void loop() {}
 
     @Override
-    public void stop() {
-        MechanismEngine.getInstance().robotRunning = false;
-    }
+    public void stop() {}
 }

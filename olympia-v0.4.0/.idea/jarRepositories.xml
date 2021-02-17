@@ -31,5 +31,10 @@
       <option name="name" value="maven" />
       <option name="url" value="https://github.com/ronmamo/reflections" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://github.com/aschoerk/reflections8" />
+    </remote-repository>
   </component>
 </project>

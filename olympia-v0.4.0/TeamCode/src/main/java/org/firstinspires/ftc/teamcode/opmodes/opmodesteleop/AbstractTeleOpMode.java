@@ -4,21 +4,24 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
+import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
 @TeleOp
-abstract public class AbstractTeleOpMode extends OpMode {
+public class AbstractTeleOpMode extends OpMode {
+    MechanismEngine engine = new MechanismEngine();
 
     @Override
     public void init() {
-
-        MechanismEngine.getInstance().robotRunning = true;
+        engine.instantiate(telemetry);
+        telemetry.addData("Test", "yes");
     }
-
-    public void loop() {}
 
     @Override
-    public void stop() {
-        MechanismEngine.getInstance().robotRunning = false;
+    public void loop() {
+
     }
+
+    @Override
+    public void stop() {}
 }

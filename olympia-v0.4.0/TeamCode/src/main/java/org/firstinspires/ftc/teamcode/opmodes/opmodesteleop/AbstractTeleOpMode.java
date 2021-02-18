@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
-@TeleOp
-public class AbstractTeleOpMode extends OpMode {
+public abstract class AbstractTeleOpMode extends OpMode {
+
     MechanismEngine engine = new MechanismEngine();
 
     @Override

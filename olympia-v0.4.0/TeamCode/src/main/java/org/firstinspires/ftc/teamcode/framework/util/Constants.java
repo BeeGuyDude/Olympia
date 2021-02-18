@@ -9,6 +9,9 @@ public class Constants {
     public static final double CONTROLLER_1_DEADZONE = 0.05;
     public static final double CONTROLLER_2_DEADZONE = 0.05;
 
+    public static final String PARALLEL = "parallel";
+    public static final String SEQUENTIAL = "sequential";
+
     public enum OpModeType {
         TELEOP,
         AUTO

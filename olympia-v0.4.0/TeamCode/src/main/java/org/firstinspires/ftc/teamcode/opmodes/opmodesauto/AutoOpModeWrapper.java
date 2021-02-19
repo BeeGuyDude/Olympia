@@ -6,14 +6,10 @@ import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
-@Autonomous
-public class AbstractAutoOpMode extends OpMode {
+public abstract class AutoOpModeWrapper extends OpMode {
 
     @Override
     public void init() {
-
-        telemetry.addData("bruh moment", "indeed");
-
 
     }
 

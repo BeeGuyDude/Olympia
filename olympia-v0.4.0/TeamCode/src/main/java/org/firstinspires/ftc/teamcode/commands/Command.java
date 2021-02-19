@@ -6,7 +6,7 @@ public interface Command {
 
     public void execute();
 
-    public Boolean isFinished();
+    public boolean isFinished();
 
     public void end();
 

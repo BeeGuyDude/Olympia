@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.commands;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+import org.firstinspires.ftc.teamcode.commands.SteppedCommand;
+
 
 public class CommandScheduler {
 
@@ -12,7 +14,6 @@ public class CommandScheduler {
     private ArrayList<Command> commandList;
     private ArrayList<String> commandType;
     private ArrayList<Boolean> commandInitialized;
-
 
     public void addLooped(Command command) {
         uninitialized.add(command);

@@ -2,9 +2,17 @@ package org.firstinspires.ftc.teamcode.mechanisms.devicehandlers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.commands.Command;
+
 public class DeadzonedController {
     private Gamepad gamepad;
     private double deadzone;
+
+    private abstract class Button {
+        protected void whenPressed(Command command) {
+
+        }
+    }
 
     public DeadzonedController(Gamepad gamepad, double deadzone) {
         this.gamepad = gamepad;

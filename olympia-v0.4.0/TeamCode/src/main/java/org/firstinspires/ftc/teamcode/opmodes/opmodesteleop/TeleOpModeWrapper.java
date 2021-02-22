@@ -27,7 +27,7 @@ public abstract class TeleOpModeWrapper extends OpMode {
 
     @Override
     public void init() {
-        scheduler.addLooped(new SteppedCommand(new ArrayList<Command>(new TestCommand(), new TestCommand())));
+//        scheduler.addLooped(new SteppedCommand());
     }
 
     @Override
@@ -35,6 +35,5 @@ public abstract class TeleOpModeWrapper extends OpMode {
 
     }
 
-    @Override
     public void stop() {}
 }

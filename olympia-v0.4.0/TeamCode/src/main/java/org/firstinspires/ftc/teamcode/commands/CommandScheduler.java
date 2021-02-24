@@ -3,13 +3,11 @@ package org.firstinspires.ftc.teamcode.commands;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
-import org.firstinspires.ftc.teamcode.commands.SteppedCommand;
-import org.firstinspires.ftc.teamcode.mechanisms.devicehandlers.DCMotorHandler;
 
 
 public class CommandScheduler {
 
-    private ArrayList<Command> uninitialized;
+    private ArrayList<Command> loopedInitialized;
     private ArrayList<Command> loopedList;
 
     private ArrayList<Command> commandList;
@@ -17,7 +15,7 @@ public class CommandScheduler {
     private ArrayList<Boolean> commandInitialized;
 
     public void addLooped(Command command) {
-        uninitialized.add(command);
+        loopedInitialized.add(command);
         loopedList.add(command);
     }
 
@@ -35,67 +33,35 @@ public class CommandScheduler {
 
     public void run() {
 
-        //looped command handling
-        for (Command command : uninitialized) {
+        for (Command command : loopedInitialized) {
             command.initialize();
-            uninitialized.remove(command);
+            loopedInitialized.remove(command);
         }
         for (Command command : loopedList) {
             command.execute();
         }
 
-        //Unlooped command handling
-        //Initialization
-        if (commandInitialized.get(0) == false) {
-            commandList.get(0).initialize();
-            commandInitialized.set(0, true);
-        }
-        if (commandType.get(0) == PARALLEL) {
-            for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
-                if (commandInitialized.get(commandIndex) == false) {
-                    commandList.get(commandIndex).initialize();
-                    commandInitialized.set(commandIndex, true);
-                }
-
-                if (commandType.get(commandIndex) == SEQUENTIAL) {
-                    break;
-                }
-            }
-        }
-
-        //Execution
-        commandList.get(0).execute();
-        if (commandType.get(0) == PARALLEL) {
-            for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
-                commandList.get(commandIndex).execute();
-
-                if (commandType.get(commandIndex) == SEQUENTIAL) {
-                    break;
-                }
-            }
-        }
-
-        //End condition checking
-        if (commandList.get(0).isFinished()) {
-            commandList.get(0).end();
-
-            commandList.remove(0);
-            commandType.remove(0);
-            commandInitialized.remove(0);
-        }
-        if (commandType.get(0) == PARALLEL) {
-            for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
-                if (commandList.get(commandIndex).isFinished()) {
-                    commandList.get(commandIndex).end();
-
-                    commandList.remove(commandIndex);
-                    commandInitialized.remove(commandIndex);
-                    if (commandType.get(commandIndex) == SEQUENTIAL) {
-                        commandType.remove(commandIndex);
+        if (!commandList.isEmpty()) {
+            for (Command command : commandList) {
+                if (commandList.indexOf(command) != 0) {
+                    if (commandType.get(commandList.indexOf(command) - 1) != PARALLEL) {
                         break;
-                    } else {
-                        commandType.remove(commandIndex);
                     }
+                }
+
+                if (commandInitialized.get(commandList.indexOf(command)) == false) {
+                    command.initialize();
+                    commandInitialized.set(commandList.indexOf(command), true);
+                }
+
+                command.execute();
+
+                if (command.isFinished()) {
+                    command.end();
+
+                    commandType.remove(commandList.indexOf(command));
+                    commandInitialized.remove(commandList.indexOf(command));
+                    commandList.remove(command);
                 }
             }
         }

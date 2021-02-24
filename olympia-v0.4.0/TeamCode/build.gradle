@@ -20,7 +20,6 @@ repositories {
 
 dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
-    implementation group: 'net.oneandone.reflections8', name: 'reflections8', version: '0.10.5'
 }
 
 android {

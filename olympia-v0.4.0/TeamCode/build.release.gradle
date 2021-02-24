@@ -5,11 +5,4 @@ dependencies {
     implementation 'org.firstinspires.ftc:FtcCommon:6.0.1'
     implementation (name: 'tfod-release', ext:'aar')
     implementation (name: 'tensorflow-lite-0.0.0-nightly', ext:'aar')
-
-    allprojects {
-        repositories {
-            maven { url 'https://github.com/aschoerk/reflections8' }
-        }
-    }
-
 }

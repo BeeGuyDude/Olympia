@@ -34,6 +34,7 @@ public class CommandScheduler {
     }
 
     public void run() {
+
         //looped command handling
         for (Command command : uninitialized) {
             command.initialize();
@@ -49,19 +50,28 @@ public class CommandScheduler {
             commandList.get(0).initialize();
             commandInitialized.set(0, true);
         }
-        for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
-            if (commandType.get(commandIndex) == PARALLEL && commandInitialized.get(commandIndex) == false) {
-                commandList.get(commandIndex).initialize();
-                commandInitialized.set(commandIndex, true);
-            }
+        if (commandType.get(0) == PARALLEL) {
+            for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
+                if (commandInitialized.get(commandIndex) == false) {
+                    commandList.get(commandIndex).initialize();
+                    commandInitialized.set(commandIndex, true);
+                }
 
+                if (commandType.get(commandIndex) == SEQUENTIAL) {
+                    break;
+                }
+            }
         }
 
         //Execution
         commandList.get(0).execute();
-        for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
-            if (commandType.get(commandIndex) == PARALLEL) {
+        if (commandType.get(0) == PARALLEL) {
+            for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
                 commandList.get(commandIndex).execute();
+
+                if (commandType.get(commandIndex) == SEQUENTIAL) {
+                    break;
+                }
             }
         }
 
@@ -73,13 +83,20 @@ public class CommandScheduler {
             commandType.remove(0);
             commandInitialized.remove(0);
         }
-        for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
-            if (commandType.get(commandIndex) == PARALLEL && commandList.get(commandIndex).isFinished()) {
-                commandList.get(commandIndex).end();
+        if (commandType.get(0) == PARALLEL) {
+            for (int commandIndex = 1; commandIndex < commandList.size(); commandIndex++) {
+                if (commandList.get(commandIndex).isFinished()) {
+                    commandList.get(commandIndex).end();
 
-                commandList.remove(commandIndex);
-                commandType.remove(commandIndex);
-                commandInitialized.remove(commandIndex);
+                    commandList.remove(commandIndex);
+                    commandType.remove(commandIndex);
+                    if (commandType.get(commandIndex) == SEQUENTIAL) {
+                        commandInitialized.remove(commandIndex);
+                        break;
+                    } else {
+                        commandInitialized.remove(commandIndex);
+                    }
+                }
             }
         }
     }

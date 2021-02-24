@@ -89,12 +89,12 @@ public class CommandScheduler {
                     commandList.get(commandIndex).end();
 
                     commandList.remove(commandIndex);
-                    commandType.remove(commandIndex);
+                    commandInitialized.remove(commandIndex);
                     if (commandType.get(commandIndex) == SEQUENTIAL) {
-                        commandInitialized.remove(commandIndex);
+                        commandType.remove(commandIndex);
                         break;
                     } else {
-                        commandInitialized.remove(commandIndex);
+                        commandType.remove(commandIndex);
                     }
                 }
             }

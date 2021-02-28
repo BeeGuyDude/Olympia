@@ -7,5 +7,19 @@ import org.firstinspires.ftc.teamcode.commands.Command;
 @TeleOp
 public class TestTeleop extends TeleOpModeWrapper {
 
+    @Override
+    public void wrapperInit() {
+
+    }
+
+    @Override
+    public void wrapperLoop() {
+
+    }
+
+    @Override
+    public void wrapperStop() {
+
+    }
 }
 

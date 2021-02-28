@@ -18,22 +18,31 @@ import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
-public abstract class TeleOpModeWrapper extends OpMode {
+abstract class TeleOpModeWrapper extends OpMode {
 
-    public CommandScheduler scheduler = new CommandScheduler();
-
-    private DeadzonedController DriverController = new DeadzonedController(gamepad1, CONTROLLER_1_DEADZONE);
-    private DeadzonedController OperatorController = new DeadzonedController(gamepad2, CONTROLLER_2_DEADZONE);
+    protected CommandScheduler scheduler = new CommandScheduler();
 
     @Override
     public void init() {
-//        scheduler.addLooped(new SteppedCommand());
+        gamepad1.setJoystickDeadzone(CONTROLLER_1_DEADZONE);
+
+        wrapperInit();
     }
+    public abstract void wrapperInit();
 
     @Override
     public void loop() {
 
-    }
 
-    public void stop() {}
+        wrapperLoop();
+    }
+    public abstract void wrapperLoop();
+
+    @Override
+    public void stop() {
+
+
+        wrapperStop();
+    }
+    public abstract void wrapperStop();
 }

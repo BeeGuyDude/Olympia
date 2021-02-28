@@ -6,16 +6,20 @@ public class Constants {
     public static final int MOTOR_WRAPPER_LOWER_SPEED_BOUND = -1;
 
     //Controller stuff
-    public static final double CONTROLLER_1_DEADZONE = 0.05;
-    public static final double CONTROLLER_2_DEADZONE = 0.05;
+    public static final float CONTROLLER_1_DEADZONE = 0.05f;
+    public static final double CONTROLLER_2_DEADZONE = 0.05f;
 
-    public enum Buttons {
+    public enum ButtonID {
         A_BUTTON,
         B_BUTTON,
         X_BUTTON,
         Y_BUTTON,
         LEFT_BUMPER,
-        RIGHT_BUMPER
+        RIGHT_BUMPER,
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT
     }
 
     public static final String PARALLEL = "parallel";

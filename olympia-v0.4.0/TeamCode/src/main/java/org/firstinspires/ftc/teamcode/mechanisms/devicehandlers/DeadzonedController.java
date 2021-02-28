@@ -8,12 +8,6 @@ public class DeadzonedController {
     private Gamepad gamepad;
     private double deadzone;
 
-    private abstract class Button {
-        protected void whenPressed(Command command) {
-
-        }
-    }
-
     public DeadzonedController(Gamepad gamepad, double deadzone) {
         this.gamepad = gamepad;
         this.deadzone = deadzone;

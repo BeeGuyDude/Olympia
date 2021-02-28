@@ -9,7 +9,7 @@ public class TestTeleop extends TeleOpModeWrapper {
 
     @Override
     public void wrapperInit() {
-
+        telemetry.addData("Test", "Success");
     }
 
     @Override

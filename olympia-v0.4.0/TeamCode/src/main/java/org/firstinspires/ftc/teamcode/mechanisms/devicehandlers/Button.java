@@ -16,4 +16,30 @@ public class Button {
         this.gamepad = gamepad;
         this.buttonId = buttonId;
     }
+
+    private boolean get() {
+        switch (buttonId) {
+            case A_BUTTON:
+                return gamepad.a;
+            case B_BUTTON:
+                return gamepad.b;
+            case X_BUTTON:
+                return gamepad.x;
+            case Y_BUTTON:
+                return gamepad.y;
+            case LEFT_BUMPER:
+                return gamepad.left_bumper;
+            case RIGHT_BUMPER:
+                return gamepad.right_bumper;
+            case UP:
+                return gamepad.dpad_up;
+            case RIGHT:
+                return gamepad.dpad_right;
+            case DOWN:
+                return gamepad.dpad_down;
+            case LEFT:
+                return gamepad.dpad_left;
+        }
+        return false;
+    }
 }

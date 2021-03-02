@@ -5,17 +5,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class TestAuto extends AutoOpModeWrapper {
 
     @Override
-    public void wrapperInit() {
+    public void autoInit() {
 
     }
 
     @Override
-    public void wrapperLoop() {
+    public void autoLoop() {
 
     }
 
     @Override
-    public void wrapperStop() {
+    public void autoStop() {
 
     }
 }

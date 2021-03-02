@@ -16,6 +16,4 @@ public class Button {
         this.gamepad = gamepad;
         this.buttonId = buttonId;
     }
-
-
 }

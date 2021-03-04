@@ -3,18 +3,23 @@ package org.firstinspires.ftc.teamcode.mechanisms.devicehandlers;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.commands.Command;
+import org.firstinspires.ftc.teamcode.commands.ButtonCommand;
+import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
+
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 public class Button {
 
     private Gamepad gamepad;
     private ButtonID buttonId;
+    private CommandScheduler scheduler;
 
     private Command localCommand;
 
-    public Button(Gamepad gamepad, ButtonID buttonId) {
+    public Button(Gamepad gamepad, ButtonID buttonId, CommandScheduler scheduler) {
         this.gamepad = gamepad;
         this.buttonId = buttonId;
+        this.scheduler = scheduler;
     }
 
     public boolean get() {
@@ -44,18 +49,18 @@ public class Button {
     }
 
     public void whenPressed(Command command) {
-
+        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHEN_PRESSED, command));
     }
 
     public void whenReleased(Command command) {
-
+        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHEN_UNPRESSED, command));
     }
 
     public void whileHeld(Command command) {
-
+        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHILE_PRESSED, command));
     }
 
     public void toggleWhenPressed(Command command) {
-        
+        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.TOGGLE_WHEN_PRESSED, command));
     }
 }

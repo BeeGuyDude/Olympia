@@ -28,6 +28,11 @@ public class Constants {
         LEFT
     }
 
-    public static final String PARALLEL = "parallel";
-    public static final String SEQUENTIAL = "sequential";
+    public enum ButtonStateRule {
+        WHEN_PRESSED,
+        WHEN_UNPRESSED,
+        WHILE_PRESSED,
+        TOGGLE_WHEN_PRESSED
+    }
+
 }

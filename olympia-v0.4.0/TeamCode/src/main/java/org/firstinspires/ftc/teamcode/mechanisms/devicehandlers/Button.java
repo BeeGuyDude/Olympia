@@ -17,7 +17,7 @@ public class Button {
         this.buttonId = buttonId;
     }
 
-    private boolean get() {
+    public boolean get() {
         switch (buttonId) {
             case A_BUTTON:
                 return gamepad.a;
@@ -41,5 +41,21 @@ public class Button {
                 return gamepad.dpad_left;
         }
         return false;
+    }
+
+    public void whenPressed(Command command) {
+
+    }
+
+    public void whenReleased(Command command) {
+
+    }
+
+    public void whileHeld(Command command) {
+
+    }
+
+    public void toggleWhenPressed(Command command) {
+        
     }
 }

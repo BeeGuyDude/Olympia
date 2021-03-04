@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode.framework.util;
 
+/*
+  <------------INCLUDE LINE - NONSTANDARD------------------------------------>
+    import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+  <-------------------------------------------------------------------------->
+*/
+
 public class Constants {
     //Motor Wrapper
     public static final int MOTOR_WRAPPER_UPPER_SPEED_BOUND = 1;

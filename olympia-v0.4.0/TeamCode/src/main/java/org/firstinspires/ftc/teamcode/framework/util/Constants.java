@@ -25,7 +25,9 @@ public class Constants {
         UP,
         RIGHT,
         DOWN,
-        LEFT
+        LEFT,
+        BACK,
+        START
     }
 
     public enum ButtonStateRule {

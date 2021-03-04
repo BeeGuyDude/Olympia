@@ -44,6 +44,10 @@ public class Button {
                 return gamepad.dpad_down;
             case LEFT:
                 return gamepad.dpad_left;
+            case BACK:
+                return gamepad.back;
+            case START:
+                return gamepad.start;
         }
         return false;
     }

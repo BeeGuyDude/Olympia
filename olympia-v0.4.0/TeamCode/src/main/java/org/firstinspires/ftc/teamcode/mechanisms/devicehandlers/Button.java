@@ -48,6 +48,8 @@ public class Button {
                 return gamepad.back;
             case START:
                 return gamepad.start;
+            case CENTER:
+                return gamepad.guide;
         }
         return false;
     }

@@ -23,6 +23,8 @@ abstract class TeleOpModeWrapper extends OpMode {
     public Button DPadLeft = new Button(gamepad1, ButtonID.LEFT, scheduler);
     public Button BackButton = new Button(gamepad1, ButtonID.BACK, scheduler);
     public Button StartButton = new Button(gamepad1, ButtonID.START, scheduler);
+    public Button CenterButton = new Button(gamepad1, ButtonID.CENTER, scheduler);
+
 
     @Override
     public void init() {

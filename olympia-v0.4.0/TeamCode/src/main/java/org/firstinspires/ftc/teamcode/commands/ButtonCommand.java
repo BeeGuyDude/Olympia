@@ -10,10 +10,11 @@ public class ButtonCommand implements Command {
     private Button button;
     private ButtonStateRule rule;
 
-    private boolean buttonState = false;
-    private boolean previousButtonState = false;
+    private boolean buttonPressed = false;
+    private boolean buttonPressedPreviously = false;
 
     private boolean initialized = false;
+    private boolean ended = false;
 
     public ButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
         this.button = button;
@@ -22,29 +23,41 @@ public class ButtonCommand implements Command {
     }
 
     public void initialize() {
-        if (!initialized) {
-            wrappedCommand.initialize();
-            initialized = true;
-        }
+        //I'ma just leave this empty for now and see if there's something I can do with it to simplify the fustercluck that's about to come out of the execute block
     }
 
     public void execute() {
-        buttonState = button.get();
+        buttonPressed = button.get();
 
         switch (rule) {
             case WHEN_PRESSED:
-
+                //Tomorrow Cian Problem
                 break;
             case WHEN_UNPRESSED:
-
+                //Tomorrow Cian Problem
                 break;
             case WHILE_PRESSED:
+                if (buttonPressed) {
+                    ended = false;
 
+                    if (!initialized) {
+                        wrappedCommand.initialize();
+                        initialized = true;
+                    }
+
+                    wrappedCommand.execute();
+                } else if (!ended) {
+                    wrappedCommand.end();
+                    ended = true;
+                }
+                //also a Tomorrow Cian Problem
                 break;
             case TOGGLE_WHEN_PRESSED:
-
+                //Take a guess
                 break;
         }
+
+        buttonPressedPreviously = buttonPressed;
     }
 
     public boolean isFinished() {

@@ -13,7 +13,7 @@ public class Constants {
 
     //Controller stuff
     public static final float CONTROLLER_1_DEADZONE = 0.05f;
-    public static final double CONTROLLER_2_DEADZONE = 0.05f;
+    public static final float CONTROLLER_2_DEADZONE = 0.05f;
 
     public enum ButtonID {
         A_BUTTON,

@@ -9,25 +9,26 @@ abstract class AutoOpModeWrapper extends OpMode {
 
     @Override
     public void init() {
-
-
         autoInit();
+
+        while (!scheduler.isEmpty()) {
+            scheduler.run();
+        }
+
+        autoLoop();
     }
     public abstract void autoInit();
 
     @Override
     public void loop() {
-
-
-        autoLoop();
+        scheduler.run();
     }
     public abstract void autoLoop();
 
     @Override
     public void stop() {
-
-
         autoStop();
+        scheduler.end();
     }
     public abstract void autoStop();
 }

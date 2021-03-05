@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.mechanisms.devicehandlers.Button;
@@ -25,28 +24,32 @@ abstract class TeleOpModeWrapper extends OpMode {
     public Button StartButton = new Button(gamepad1, ButtonID.START, scheduler);
     public Button CenterButton = new Button(gamepad1, ButtonID.CENTER, scheduler);
 
-
     @Override
     public void init() {
         gamepad1.setJoystickDeadzone(CONTROLLER_1_DEADZONE);
+        gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
 
         teleOpInit();
+
+        while (!scheduler.isEmpty()) {
+            scheduler.run();
+        }
+
+        teleOpLoop();
     }
     public abstract void teleOpInit();
 
     @Override
     public void loop() {
-
-
-        teleOpLoop();
+        scheduler.run();
     }
     public abstract void teleOpLoop();
 
     @Override
     public void stop() {
-
-
         teleOpStop();
+
+        scheduler.end();
     }
     public abstract void teleOpStop();
 }

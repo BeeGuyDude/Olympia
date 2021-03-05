@@ -68,4 +68,8 @@ public class CommandScheduler {
             command.end();
         }
     }
+
+    public boolean isEmpty() {
+        return commandList.isEmpty();
+    }
 }

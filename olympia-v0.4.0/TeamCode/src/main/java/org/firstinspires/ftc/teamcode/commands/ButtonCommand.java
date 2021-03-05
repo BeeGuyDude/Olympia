@@ -13,8 +13,14 @@ public class ButtonCommand implements Command {
     private boolean buttonPressed = false;
     private boolean buttonPressedPreviously = false;
 
-    private boolean initialized = false;
-    private boolean ended = false;
+    private boolean running = false;
+
+    private enum ButtonStateChange {
+        NO_CHANGE,
+        PRESSED,
+        RELEASED
+    }
+    private ButtonStateChange buttonStateChange;
 
     public ButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
         this.button = button;
@@ -29,32 +35,60 @@ public class ButtonCommand implements Command {
     public void execute() {
         buttonPressed = button.get();
 
+        if (buttonPressed && !buttonPressedPreviously) {
+            buttonStateChange = ButtonStateChange.PRESSED;
+        } else if (!buttonPressed && buttonPressedPreviously) {
+            buttonStateChange = ButtonStateChange.RELEASED;
+        } else {
+            buttonStateChange = ButtonStateChange.NO_CHANGE;
+        }
+
         switch (rule) {
             case WHEN_PRESSED:
-                //Tomorrow Cian Problem
-                break;
-            case WHEN_UNPRESSED:
-                //Tomorrow Cian Problem
-                break;
-            case WHILE_PRESSED:
-                if (buttonPressed) {
-                    ended = false;
-
-                    if (!initialized) {
-                        wrappedCommand.initialize();
-                        initialized = true;
+                if (buttonStateChange == ButtonStateChange.PRESSED) {
+                    if (running) {
+                        wrappedCommand.end();
                     }
-
-                    wrappedCommand.execute();
-                } else if (!ended) {
-                    wrappedCommand.end();
-                    ended = true;
+                    wrappedCommand.initialize();
+                    running = true;
                 }
-                //also a Tomorrow Cian Problem
                 break;
+
+            case WHEN_RELEASED:
+                if (buttonStateChange == ButtonStateChange.RELEASED) {
+                    if (running) {
+                        wrappedCommand.end();
+                    }
+                    wrappedCommand.initialize();
+                    running = true;
+                }
+                break;
+
+            case WHILE_HELD:
+                if (buttonStateChange == ButtonStateChange.PRESSED) {
+                    wrappedCommand.initialize();
+                    running = true;
+                } else if (running && buttonStateChange == ButtonStateChange.RELEASED) {
+                    wrappedCommand.end();
+                    running = false;
+                }
+                break;
+
             case TOGGLE_WHEN_PRESSED:
-                //Take a guess
+                if (buttonStateChange == ButtonStateChange.PRESSED) {
+                    if (running == true) {
+                        wrappedCommand.end();
+                        running = false;
+                    } else {
+                        wrappedCommand.initialize();
+                        running = true;
+                    }
+                }
                 break;
+        }
+
+        if (running) {
+            wrappedCommand.execute();
         }
 
         buttonPressedPreviously = buttonPressed;

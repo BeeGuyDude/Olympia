@@ -59,11 +59,11 @@ public class Button {
     }
 
     public void whenReleased(Command command) {
-        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHEN_UNPRESSED, command));
+        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHEN_RELEASED, command));
     }
 
     public void whileHeld(Command command) {
-        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHILE_PRESSED, command));
+        scheduler.addLooped(new ButtonCommand(this, ButtonStateRule.WHILE_HELD, command));
     }
 
     public void toggleWhenPressed(Command command) {

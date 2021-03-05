@@ -33,8 +33,8 @@ public class Constants {
 
     public enum ButtonStateRule {
         WHEN_PRESSED,
-        WHEN_UNPRESSED,
-        WHILE_PRESSED,
+        WHEN_RELEASED,
+        WHILE_HELD,
         TOGGLE_WHEN_PRESSED
     }
 

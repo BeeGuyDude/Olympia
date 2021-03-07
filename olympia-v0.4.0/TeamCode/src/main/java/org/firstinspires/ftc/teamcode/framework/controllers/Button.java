@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.mechanisms.devicehandlers;
+package org.firstinspires.ftc.teamcode.framework.controllers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.commands.Command;
-import org.firstinspires.ftc.teamcode.commands.ButtonCommand;
+import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
+import org.firstinspires.ftc.teamcode.commands.basecommands.ButtonCommand;
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
@@ -14,8 +14,6 @@ public class Button {
     private ButtonID buttonId;
     private CommandScheduler scheduler;
 
-    private Command localCommand;
-
     public Button(Gamepad gamepad, ButtonID buttonId, CommandScheduler scheduler) {
         this.gamepad = gamepad;
         this.buttonId = buttonId;
@@ -23,35 +21,53 @@ public class Button {
     }
 
     public boolean get() {
+        boolean result;
+
         switch (buttonId) {
             case A_BUTTON:
-                return gamepad.a;
+                result = gamepad.a;
+                break;
             case B_BUTTON:
-                return gamepad.b;
+                result = gamepad.b;
+                break;
             case X_BUTTON:
-                return gamepad.x;
+                result = gamepad.x;
+                break;
             case Y_BUTTON:
-                return gamepad.y;
+                result = gamepad.y;
+                break;
             case LEFT_BUMPER:
-                return gamepad.left_bumper;
+                result = gamepad.left_bumper;
+                break;
             case RIGHT_BUMPER:
-                return gamepad.right_bumper;
+                result = gamepad.right_bumper;
+                break;
             case UP:
-                return gamepad.dpad_up;
+                result = gamepad.dpad_up;
+                break;
             case RIGHT:
-                return gamepad.dpad_right;
+                result = gamepad.dpad_right;
+                break;
             case DOWN:
-                return gamepad.dpad_down;
+                result = gamepad.dpad_down;
+                break;
             case LEFT:
-                return gamepad.dpad_left;
+                result = gamepad.dpad_left;
+                break;
             case BACK:
-                return gamepad.back;
+                result = gamepad.back;
+                break;
             case START:
-                return gamepad.start;
+                result = gamepad.start;
+                break;
             case CENTER:
-                return gamepad.guide;
+                result = gamepad.guide;
+                break;
+
+            default:
+                result = false;
         }
-        return false;
+        return result;
     }
 
     public void whenPressed(Command command) {

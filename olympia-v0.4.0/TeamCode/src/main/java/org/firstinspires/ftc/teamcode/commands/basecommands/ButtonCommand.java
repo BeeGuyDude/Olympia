@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.commands;
+package org.firstinspires.ftc.teamcode.commands.basecommands;
 
-import org.firstinspires.ftc.teamcode.mechanisms.devicehandlers.Button;
+import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 

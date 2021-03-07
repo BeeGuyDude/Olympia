@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.actions;
 
-import org.firstinspires.ftc.teamcode.commands.Command;
+import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 
 public class TestCommand implements Command {
 

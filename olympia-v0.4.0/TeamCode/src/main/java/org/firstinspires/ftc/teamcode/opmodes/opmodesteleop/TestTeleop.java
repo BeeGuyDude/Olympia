@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.Command;
 import org.firstinspires.ftc.teamcode.commands.actions.TestCommand;
 
 @TeleOp

@@ -1,8 +1,10 @@
-package org.firstinspires.ftc.teamcode.commands;
+package org.firstinspires.ftc.teamcode.commands.basecommands;
+
+import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 
 import java.util.ArrayList;
 
-public class SteppedCommand implements Command{
+public class SteppedCommand implements Command {
 
     private ArrayList<Command> commandList;
     private ArrayList<Boolean> initialized;

@@ -7,31 +7,11 @@ import java.util.ArrayList;
 
 public class CommandScheduler {
 
-    private enum commandType {
-        LOOPED,
-        SEQUENTIAL,
-        PARALLEL
-    }
-
     private ArrayList<Command> commandList;
-    private ArrayList<commandType> commandTypeList;
     private ArrayList<Boolean> commandInitialized;
 
-    public void addLooped(Command command) {
-        commandList.add(0, command);
-        commandTypeList.add(0, commandType.LOOPED);
-        commandInitialized.add(0, false);
-    }
-
-    public void addParallel(Command command) {
+    public void add(Command command) {
         commandList.add(command);
-        commandTypeList.add(commandType.PARALLEL);
-        commandInitialized.add(false);
-    }
-
-    public void addSequential(Command command) {
-        commandList.add(command);
-        commandTypeList.add(commandType.SEQUENTIAL);
         commandInitialized.add(false);
     }
 
@@ -39,11 +19,6 @@ public class CommandScheduler {
 
         if (!commandList.isEmpty()) {
             for (Command command : commandList) {
-                if (commandList.indexOf(command) != 0) {
-                    if (commandTypeList.get(commandList.indexOf(command) - 1) == commandType.SEQUENTIAL) {
-                        break;
-                    }
-                }
 
                 if (commandInitialized.get(commandList.indexOf(command)) == false) {
                     command.initialize();
@@ -55,7 +30,6 @@ public class CommandScheduler {
                 if (command.isFinished()) {
                     command.end();
 
-                    commandTypeList.remove(commandList.indexOf(command));
                     commandInitialized.remove(commandList.indexOf(command));
                     commandList.remove(command);
                 }

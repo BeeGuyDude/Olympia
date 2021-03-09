@@ -15,7 +15,7 @@ public class TestTeleop extends TeleOpModeWrapper {
 
     @Override
     public void teleOpLoop() {
-        scheduler.addLooped(new TestDrive(OperatorLeftYAxis, OperatorRightYAxis));
+        scheduler.add(new TestDrive(OperatorLeftYAxis, OperatorRightYAxis));
 
         DriverAButton.whenPressed(new TestCommand());
         OperatorBButton.toggleWhenPressed(new TestCommand());

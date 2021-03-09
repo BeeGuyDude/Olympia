@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesauto;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.commands.*;
 
 abstract class AutoOpModeWrapper extends OpMode {
 

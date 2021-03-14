@@ -3,6 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.actions.TestDrive;
 import org.firstinspires.ftc.teamcode.commands.actions.TestCommand;
+import org.firstinspires.ftc.teamcode.commands.actions.ToggleIntakePosition;
 
 @TeleOp
 public class TestTeleop extends TeleOpModeWrapper {
@@ -17,7 +18,7 @@ public class TestTeleop extends TeleOpModeWrapper {
     public void teleOpLoop() {
         scheduler.add(new TestDrive(OperatorLeftYAxis, OperatorRightYAxis));
 
-        DriverAButton.whenPressed(new TestCommand());
+        DriverAButton.whenPressed(new ToggleIntakePosition());
         OperatorBButton.toggleWhenPressed(new TestCommand());
     }
 

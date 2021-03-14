@@ -4,24 +4,23 @@ import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
-public class TestCommand implements Command {
+public class ToggleIntakePosition implements Command {
 
-    private TestIntake localMechanism = MechanismEngine.getInstance().getMechanism(TestIntake.class);
+    private TestIntake localIntake = MechanismEngine.getInstance().getMechanism(TestIntake.class);
 
     public void initialize() {
 
     }
 
     public void execute() {
-        localMechanism.extend();
+        localIntake.toggle();
     }
 
     public boolean isFinished() {
-        return false;
+        return true;
     }
 
     public void end() {
 
     }
-
 }

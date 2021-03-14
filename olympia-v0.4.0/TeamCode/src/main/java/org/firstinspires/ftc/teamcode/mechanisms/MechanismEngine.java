@@ -21,14 +21,6 @@ public class MechanismEngine {
     //Mechanism table handling
     private Map<Class, Object> rawMechanismMap = new HashMap<Class, Object>();
 
-    private void addMechanism(Class inputMechanism) {
-        try {
-            rawMechanismMap.put(inputMechanism, inputMechanism.newInstance());
-        } catch (Exception e) {
-            //Future Telemetry Post for "Invalid Mechanism"
-        }
-    }
-
     public <T> T getMechanism(Class<T> mechanismKey) {
         T returnInstance = null;
 

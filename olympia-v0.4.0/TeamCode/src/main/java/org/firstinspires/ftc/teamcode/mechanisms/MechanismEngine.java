@@ -26,7 +26,7 @@ public class MechanismEngine {
 
         try {
 
-            if(!getInstance().rawMechanismMap.containsKey(mechanismKey)){
+            if(!getInstance().rawMechanismMap.containsKey(mechanismKey)) {
 
                 T obj = mechanismKey.newInstance();
 
@@ -36,7 +36,7 @@ public class MechanismEngine {
             returnInstance = (T)getInstance().rawMechanismMap.get(mechanismKey);
 
         } catch (Exception e) {
-            //Future Telemetry Post for "Cannot Instantiate
+            //Future Telemetry Post for "Cannot Instantiate"
         }
 
         return returnInstance;

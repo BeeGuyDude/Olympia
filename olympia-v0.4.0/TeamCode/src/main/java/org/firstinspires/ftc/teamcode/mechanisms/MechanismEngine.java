@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.framework.util.Constants.*;
-import org.firstinspires.ftc.teamcode.mechanisms.*;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -40,6 +39,29 @@ public class MechanismEngine {
         }
 
         return returnInstance;
+    }
+
+    //Mechanism Initialization Handling
+    private ArrayList<Object> initializedMechanisms = new ArrayList<>();
+    private HardwareMap localHardwareMap;
+
+    public void setHardwareMap(HardwareMap hwmap) {
+        this.localHardwareMap = hwmap;
+    }
+
+    public void initializeMechanisms() {
+        for (Object mechanism : rawMechanismMap.values()) {
+            Mechanism castedMechanism = (Mechanism) mechanism;
+
+            if (!initializedMechanisms.contains(mechanism)) {
+                try {
+                    castedMechanism.init(localHardwareMap);
+                    initializedMechanisms.add(mechanism);
+                } catch (Exception e) {
+                    //future telemetryhandler post for improper cast (signifying wrong object)
+                }
+            }
+        }
     }
 
 }

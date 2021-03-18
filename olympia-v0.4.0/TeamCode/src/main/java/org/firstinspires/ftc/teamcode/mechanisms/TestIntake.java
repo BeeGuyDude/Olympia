@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
@@ -9,8 +10,8 @@ public class TestIntake extends Mechanism {
     private Servo myServo;
 
     @Override
-    public void init() {
-
+    public void init(HardwareMap hwmap) {
+        myServo = hwmap.get(Servo.class, "servo");
     }
 
     public void extend() {

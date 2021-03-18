@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
+import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
@@ -61,12 +62,16 @@ abstract class TeleOpModeWrapper extends OpMode {
         gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
 
         teleOpInit();
+        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
+        MechanismEngine.getInstance().initializeMechanisms();
 
         while (!scheduler.isEmpty()) {
             scheduler.run();
         }
 
         teleOpLoop();
+        MechanismEngine.getInstance().initializeMechanisms();
+        //yes I know it does it twice, you don't know if some mechanisms aren't used yet until the loop portion
     }
     public abstract void teleOpInit();
 

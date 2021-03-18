@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class CommandScheduler {
 
-    private ArrayList<Command> commandList;
-    private ArrayList<Boolean> commandInitialized;
+    private ArrayList<Command> commandList = new ArrayList<>();
+    private ArrayList<Boolean> commandInitialized = new ArrayList<>();
 
     public void add(Command command) {
         commandList.add(command);

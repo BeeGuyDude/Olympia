@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 
 import java.util.ArrayList;
@@ -45,5 +46,11 @@ public class CommandScheduler {
 
     public boolean isEmpty() {
         return commandList.isEmpty();
+    }
+
+    public void postCommands(Telemetry telemetry) {
+        for (Command command : commandList) {
+            telemetry.addData(command.toString(), "Initialized");
+        }
     }
 }

@@ -120,6 +120,8 @@ abstract class TeleOpModeWrapper extends OpMode {
 
     @Override
     public void loop() {
+        telemetry.addData("Right Trigger Value", gamepad1.right_stick_x);
+        telemetry.addData("A Button Value", gamepad1.a);
         scheduler.run();
     }
     public abstract void teleOpLoop();

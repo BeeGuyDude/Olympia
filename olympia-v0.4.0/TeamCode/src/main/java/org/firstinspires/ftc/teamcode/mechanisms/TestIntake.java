@@ -32,4 +32,12 @@ public class TestIntake extends Mechanism {
         }
     }
 
+    public void setPosition(double position) {
+        myServo.setPosition(position);
+    }
+
+    public double getExtension() {
+        return myServo.getPosition();
+    }
+
 }

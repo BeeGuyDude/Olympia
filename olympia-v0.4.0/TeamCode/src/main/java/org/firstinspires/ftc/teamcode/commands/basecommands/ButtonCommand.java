@@ -20,7 +20,7 @@ public class ButtonCommand implements Command {
         PRESSED,
         RELEASED
     }
-    private ButtonStateChange buttonStateChange;
+    private ButtonStateChange buttonStateChange = ButtonStateChange.NO_CHANGE;
 
     public ButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
         this.button = button;

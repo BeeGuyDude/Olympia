@@ -11,12 +11,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 @TeleOp
 public class TestTeleop extends TeleOpModeWrapper {
 
-    private TestIntake myIntake = /*MechanismEngine.getInstance().getMechanism(TestIntake.class);*/ new TestIntake();
     @Override
     public void teleOpInit() {
         telemetry.addData("Test", "Success");
-        myIntake.init(hardwareMap);
-        myIntake.extend();
     }
 
     @Override
@@ -24,9 +21,8 @@ public class TestTeleop extends TeleOpModeWrapper {
 //        scheduler.add(new TestDrive(OperatorLeftYAxis, OperatorRightYAxis));
 //
         DriverAButton.whileHeld(new TestTelemetryCommand(telemetry));
-//        OperatorBButton.toggleWhenPressed(new TestCommand());
 
-        myIntake.retract();
+        scheduler.postCommands(telemetry);
 
 //        scheduler.add(new TestTelemetryCommand(telemetry));
     }

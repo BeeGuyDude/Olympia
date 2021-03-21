@@ -7,18 +7,18 @@ import com.qualcomm.robotcore.util.Range;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
-public class DCMotorHandler {
+public class DCMotorWithEncoderHandler {
     private boolean flipped;
     private String deviceName;
     private DcMotor motor;
 
     private double previousMotorPower = 0;
 
-    public DCMotorHandler (String deviceName, boolean flipped) {
+    public DCMotorWithEncoderHandler(String deviceName, boolean flipped) {
         this.deviceName = deviceName;
         this.flipped = flipped;
 
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (flipped) {
@@ -37,5 +37,9 @@ public class DCMotorHandler {
             motor.setPower(Range.clip(motorPower, MOTOR_WRAPPER_LOWER_SPEED_BOUND, MOTOR_WRAPPER_UPPER_SPEED_BOUND));
             previousMotorPower = motorPower;
         }
+    }
+
+    public double getEncoderValue() {
+        return motor.getCurrentPosition();
     }
 }

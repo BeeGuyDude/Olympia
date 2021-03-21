@@ -10,7 +10,8 @@ import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 abstract class TeleOpModeWrapper extends OpMode {
 
-    protected CommandScheduler scheduler = new CommandScheduler();
+    private double previousCycleTime = 0;
+    CommandScheduler scheduler = new CommandScheduler();
 
     //Driver
     public Button DriverAButton;
@@ -124,6 +125,9 @@ abstract class TeleOpModeWrapper extends OpMode {
         telemetry.addData("Right Trigger Value", gamepad1.right_stick_x);
         telemetry.addData("A Button Value", gamepad1.a);
         scheduler.run();
+
+        telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
+        previousCycleTime = getRuntime();
     }
     public abstract void teleOpLoop();
 

@@ -6,7 +6,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
 abstract class AutoOpModeWrapper extends OpMode {
 
-    protected CommandScheduler scheduler = new CommandScheduler();
+    private double previousCycleTime = 0;
+    CommandScheduler scheduler = new CommandScheduler();
 
     @Override
     public void init() {
@@ -27,6 +28,9 @@ abstract class AutoOpModeWrapper extends OpMode {
     @Override
     public void loop() {
         scheduler.run();
+
+        telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
+        previousCycleTime = getRuntime();
     }
     public abstract void autoLoop();
 

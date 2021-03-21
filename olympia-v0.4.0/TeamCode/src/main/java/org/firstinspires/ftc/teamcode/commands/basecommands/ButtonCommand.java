@@ -91,6 +91,11 @@ public class ButtonCommand implements Command {
             wrappedCommand.execute();
         }
 
+        if (wrappedCommand.isFinished()) {
+            wrappedCommand.end();
+            running = false;
+        }
+
         buttonPressedPreviously = buttonPressed;
     }
 

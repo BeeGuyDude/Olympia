@@ -58,6 +58,7 @@ abstract class TeleOpModeWrapper extends OpMode {
 
     @Override
     public void init() {
+
         DriverAButton = new Button(gamepad1, ButtonID.A_BUTTON, scheduler);
         DriverBButton = new Button(gamepad1, ButtonID.B_BUTTON, scheduler);
         DriverXButton = new Button(gamepad1, ButtonID.X_BUTTON, scheduler);

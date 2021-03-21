@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.commands.actions.TestDrive;
 import org.firstinspires.ftc.teamcode.commands.actions.TestCommand;
 import org.firstinspires.ftc.teamcode.commands.actions.TestTelemetryCommand;
 import org.firstinspires.ftc.teamcode.commands.actions.ToggleIntakePosition;
+import org.firstinspires.ftc.teamcode.commands.actions.UnendingToggleIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
@@ -23,7 +24,10 @@ public class TestTeleop extends TeleOpModeWrapper {
     @Override
     public void teleOpLoop() {
 //        scheduler.add(new TestDrive(OperatorLeftYAxis, OperatorRightYAxis));
-        scheduler.add(new SetIntakePosition(DriverLeftXAxis));
+//        scheduler.add(new SetIntakePosition(DriverRightXAxis));
+
+        DriverAButton.toggleWhenPressed(new ToggleIntakePosition());
+//        DriverBButton.whenPressed(new RetractIntake());
         scheduler.postCommands(telemetry);
     }
 

@@ -24,9 +24,9 @@ public class TestTeleop extends TeleOpModeWrapper {
     @Override
     public void teleOpLoop() {
 //        scheduler.add(new TestDrive(OperatorLeftYAxis, OperatorRightYAxis));
-//        scheduler.add(new SetIntakePosition(DriverRightXAxis));
+//        scheduler.add(new SetIntakePosition(DriverLeftYAxis));
 
-        DriverAButton.toggleWhenPressed(new ToggleIntakePosition());
+        DriverAButton.whileHeld(new TestTelemetryCommand(telemetry));
 //        DriverBButton.whenPressed(new RetractIntake());
         scheduler.postCommands(telemetry);
     }

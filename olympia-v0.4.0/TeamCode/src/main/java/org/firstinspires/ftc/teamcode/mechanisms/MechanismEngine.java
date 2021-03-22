@@ -25,7 +25,7 @@ public class MechanismEngine {
 
         try {
 
-            if(!getInstance().rawMechanismMap.containsKey(mechanismKey)) {
+            if (!getInstance().rawMechanismMap.containsKey(mechanismKey)) {
 
                 T obj = mechanismKey.newInstance();
 

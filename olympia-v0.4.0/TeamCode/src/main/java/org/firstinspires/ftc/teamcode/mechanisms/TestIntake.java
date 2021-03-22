@@ -2,16 +2,19 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.mechanisms.devicehandlers.ServoHandler;
+
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 public class TestIntake extends Mechanism {
 
     private boolean extended = false;
-    private Servo myServo;
+    private ServoHandler myServo = new ServoHandler("servo");
 
     @Override
     public void init(HardwareMap hwmap) {
-        myServo = hwmap.get(Servo.class, "servo");
+        myServo.init(hwmap);
     }
 
     public void extend() {

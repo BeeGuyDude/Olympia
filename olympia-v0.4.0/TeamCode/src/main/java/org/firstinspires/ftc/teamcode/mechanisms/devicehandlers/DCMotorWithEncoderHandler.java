@@ -17,6 +17,10 @@ public class DCMotorWithEncoderHandler {
     public DCMotorWithEncoderHandler(String deviceName, boolean flipped) {
         this.deviceName = deviceName;
         this.flipped = flipped;
+    }
+
+    public void init(HardwareMap hwMap) {
+        motor = hwMap.get(DcMotor.class, deviceName);
 
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -26,10 +30,6 @@ public class DCMotorWithEncoderHandler {
         } else {
             motor.setDirection(DcMotorSimple.Direction.FORWARD);
         }
-    }
-
-    public void init(HardwareMap hwMap) {
-        motor = hwMap.get(DcMotor.class, deviceName);
     }
 
     public void setPower(double motorPower) {

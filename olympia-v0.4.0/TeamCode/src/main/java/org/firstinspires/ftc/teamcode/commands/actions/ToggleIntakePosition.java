@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
 public class ToggleIntakePosition implements Command {
 
-    private TestIntake localIntake = MechanismEngine.getInstance().getMechanism(TestIntake.class);
+    private TestIntake localIntake = MechanismEngine.getInstance().include(TestIntake.class);
 
     public void initialize() {
 

@@ -8,12 +8,25 @@ import java.util.ArrayList;
 
 public class CommandScheduler {
 
+    private enum commandPriority {
+        LOW,
+        HIGH
+    }
+
     private ArrayList<Command> commandList = new ArrayList<>();
-    private ArrayList<Boolean> commandInitialized = new ArrayList<>();
+    private ArrayList<Boolean> commandInitializedList = new ArrayList<>();
+    private ArrayList<commandPriority> commandPriorityList = new ArrayList<>();
 
     public void add(Command command) {
         commandList.add(command);
-        commandInitialized.add(false);
+        commandInitializedList.add(false);
+        commandPriorityList.add(commandPriority.LOW);
+    }
+
+    public void addHighPriority(Command command) {
+        commandList.add(command);
+        commandInitializedList.add(false);
+        commandPriorityList.add(commandPriority.HIGH);
     }
 
     public void run() {
@@ -21,9 +34,9 @@ public class CommandScheduler {
         if (!commandList.isEmpty()) {
             for (Command command : commandList) {
 
-                if (commandInitialized.get(commandList.indexOf(command)) == false) {
+                if (commandInitializedList.get(commandList.indexOf(command)) == false) {
                     command.initialize();
-                    commandInitialized.set(commandList.indexOf(command), true);
+                    commandInitializedList.set(commandList.indexOf(command), true);
                 }
 
                 command.execute();
@@ -31,7 +44,7 @@ public class CommandScheduler {
                 if (command.isFinished()) {
                     command.end();
 
-                    commandInitialized.remove(commandList.indexOf(command));
+                    commandInitializedList.remove(commandList.indexOf(command));
                     commandList.remove(command);
                 }
             }

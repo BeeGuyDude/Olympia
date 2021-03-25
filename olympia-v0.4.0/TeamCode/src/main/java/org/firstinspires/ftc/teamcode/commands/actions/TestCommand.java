@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
 public class TestCommand implements Command {
 
-    private TestIntake localMechanism = MechanismEngine.getInstance().getMechanism(TestIntake.class);
+    private TestIntake localMechanism = MechanismEngine.getInstance().include(TestIntake.class);
 
     public void initialize() {
 

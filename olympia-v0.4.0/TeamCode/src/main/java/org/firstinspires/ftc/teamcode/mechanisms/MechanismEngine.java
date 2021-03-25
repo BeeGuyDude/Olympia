@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -19,8 +21,29 @@ public class MechanismEngine {
 
     //Mechanism table handling
     private Map<Class, Object> rawMechanismMap = new HashMap<Class, Object>();
+    private Map<Class, ArrayList<Command>> commandInterruptMap = new HashMap<Class, ArrayList<Command>>();
+    public <T> T include(Class<T> mechanismKey) {
+        T returnInstance = null;
 
-    public <T> T getMechanism(Class<T> mechanismKey) {
+        try {
+
+            if (!getInstance().rawMechanismMap.containsKey(mechanismKey)) {
+
+                T obj = mechanismKey.newInstance();
+
+                getInstance().rawMechanismMap.put(mechanismKey, obj);
+            }
+
+            returnInstance = (T)getInstance().rawMechanismMap.get(mechanismKey);
+
+        } catch (Exception e) {
+            //Future Telemetry Post for "Cannot Instantiate"
+        }
+
+        return returnInstance;
+    }
+
+    public <T> T require(Class<T> mechanismKey, Command command) {
         T returnInstance = null;
 
         try {

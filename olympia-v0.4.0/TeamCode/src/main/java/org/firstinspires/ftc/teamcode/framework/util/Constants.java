@@ -47,6 +47,7 @@ public class Constants {
         TOGGLE_WHEN_PRESSED
     }
 
+    //Test Mechanism stuff
     public static final double INTAKE_EXTENDED_POSITION = 1;
     public static final double INTAKE_RETRACTED_POSITION = 0;
 

@@ -7,9 +7,11 @@ import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 public class ExtendIntake extends Command {
     private TestIntake localIntake = MechanismEngine.getInstance().getMechanism(TestIntake.class);
 
-    public void initialize() {
-
+    public ExtendIntake() {
+        Requires(localIntake);
     }
+
+    public void initialize() {}
 
     public void execute() {
         localIntake.extend();

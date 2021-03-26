@@ -33,7 +33,7 @@ public class MechanismEngine {
                 getInstance().rawMechanismMap.put(mechanismKey, obj);
             }
 
-            returnInstance = (T)getInstance().rawMechanismMap.get(mechanismKey);
+            returnInstance = (T) getInstance().rawMechanismMap.get(mechanismKey);
 
         } catch (Exception e) {
             //Future Telemetry Post for "Cannot Instantiate"

@@ -4,6 +4,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,8 +22,9 @@ public class CommandScheduler {
     private Map<Command, Boolean> boundCommandRunning = new HashMap<Command, Boolean>();
     private Map<Command, commandPriority> boundCommandPriority = new HashMap<Command, commandPriority>();
 
-    private ArrayList<Command> commandList = new ArrayList<>();
-    private ArrayList<Boolean> commandInitializedList = new ArrayList<>();
+    private ArrayList<Command> commandList = new ArrayList<Command>();
+    private ArrayList<Command> executionList = new ArrayList<Command>();
+    private ArrayList<Boolean> commandInitializedList = new ArrayList<Boolean>();
 
     public void add(Command command) {
         commandList.add(command);
@@ -51,7 +53,7 @@ public class CommandScheduler {
                 if (mechanismBindingMap.containsKey(mechanism)) {
                     mechanismBindingMap.get(mechanism).add(command);
                 } else {
-                    mechanismBindingMap.put(mechanism, (ArrayList)Arrays.asList(command));
+                    mechanismBindingMap.put(mechanism, new ArrayList(Arrays.asList(command)));
                 }
 
                 boundCommandRunning.put(command, false);

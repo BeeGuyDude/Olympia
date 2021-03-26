@@ -8,7 +8,7 @@ public abstract class Command {
 
     //Mechanism interrupt Binding
     private ArrayList<Mechanism> boundMechanisms = new ArrayList<Mechanism>();
-    private void Requires(Mechanism mechanism) {
+    public void Requires(Mechanism mechanism) {
         boundMechanisms.add(mechanism);
     }
     public ArrayList<Mechanism> getBoundMechanisms() {

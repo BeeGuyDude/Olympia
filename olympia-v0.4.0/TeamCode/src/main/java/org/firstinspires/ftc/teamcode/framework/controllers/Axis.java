@@ -21,13 +21,13 @@ public class Axis {
                 result = gamepad.left_stick_x;
                 break;
             case LEFT_Y:
-                result = gamepad.left_stick_y;
+                result = -gamepad.left_stick_y;
                 break;
             case RIGHT_X:
                 result = gamepad.right_stick_x;
                 break;
             case RIGHT_Y:
-                result = gamepad.right_stick_y;
+                result = -gamepad.right_stick_y;
                 break;
             case LEFT_TRIGGER:
                 result = gamepad.left_trigger;

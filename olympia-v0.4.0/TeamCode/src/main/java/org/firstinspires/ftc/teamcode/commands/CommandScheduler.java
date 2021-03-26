@@ -33,7 +33,7 @@ public class CommandScheduler {
                 if (mechanismBindingMap.containsKey(mechanism)) {
                     mechanismBindingMap.get(mechanism).add(command);
                 } else {
-                    mechanismBindingMap.put(mechanism, (ArrayList)Arrays.asList(command));
+                    mechanismBindingMap.put(mechanism, new ArrayList(Arrays.asList(command)));
                 }
 
                 boundCommandRunning.put(command, false);

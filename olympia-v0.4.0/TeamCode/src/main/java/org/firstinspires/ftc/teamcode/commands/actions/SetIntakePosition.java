@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
 public class SetIntakePosition implements Command {
-    private TestIntake localIntake = MechanismEngine.getInstance().include(TestIntake.class);
+    private TestIntake localIntake = MechanismEngine.getInstance().getMechanism(TestIntake.class);
 
     private Axis inputAxis;
 

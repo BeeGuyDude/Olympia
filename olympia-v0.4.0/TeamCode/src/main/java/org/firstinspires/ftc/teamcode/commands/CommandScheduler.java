@@ -2,8 +2,13 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
+import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class CommandScheduler {
@@ -12,21 +17,47 @@ public class CommandScheduler {
         LOW,
         HIGH
     }
+    private Map<Mechanism, ArrayList<Command>> mechanismBindingMap = new HashMap<Mechanism, ArrayList<Command>>();
+    private Map<Command, Boolean> boundCommandRunning = new HashMap<Command, Boolean>();
+    private Map<Command, commandPriority> boundCommandPriority = new HashMap<Command, commandPriority>();
 
     private ArrayList<Command> commandList = new ArrayList<>();
     private ArrayList<Boolean> commandInitializedList = new ArrayList<>();
-    private ArrayList<commandPriority> commandPriorityList = new ArrayList<>();
 
     public void add(Command command) {
         commandList.add(command);
         commandInitializedList.add(false);
-        commandPriorityList.add(commandPriority.LOW);
+
+        if (!command.getBoundMechanisms().isEmpty()) {
+            for (Mechanism mechanism : command.getBoundMechanisms()) {
+                if (mechanismBindingMap.containsKey(mechanism)) {
+                    mechanismBindingMap.get(mechanism).add(command);
+                } else {
+                    mechanismBindingMap.put(mechanism, (ArrayList)Arrays.asList(command));
+                }
+
+                boundCommandRunning.put(command, false);
+                boundCommandPriority.put(command, commandPriority.LOW);
+            }
+        }
     }
 
     public void addHighPriority(Command command) {
         commandList.add(command);
         commandInitializedList.add(false);
-        commandPriorityList.add(commandPriority.HIGH);
+
+        if (!command.getBoundMechanisms().isEmpty()) {
+            for (Mechanism mechanism : command.getBoundMechanisms()) {
+                if (mechanismBindingMap.containsKey(mechanism)) {
+                    mechanismBindingMap.get(mechanism).add(command);
+                } else {
+                    mechanismBindingMap.put(mechanism, (ArrayList)Arrays.asList(command));
+                }
+
+                boundCommandRunning.put(command, false);
+                boundCommandPriority.put(command, commandPriority.HIGH);
+            }
+        }
     }
 
     public void run() {

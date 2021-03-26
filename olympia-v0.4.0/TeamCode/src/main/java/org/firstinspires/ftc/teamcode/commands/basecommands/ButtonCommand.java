@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
-public class ButtonCommand implements Command {
+public class ButtonCommand extends Command {
 
     private Command wrappedCommand;
     private Button button;

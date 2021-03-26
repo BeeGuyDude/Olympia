@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
-public class TestCommand implements Command {
+public class TestCommand extends Command {
 
     private TestIntake localMechanism = MechanismEngine.getInstance().getMechanism(TestIntake.class);
 

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 
-public class TestDrive implements Command {
+public class TestDrive extends Command {
     private Axis leftInput;
     private Axis rightInput;
 

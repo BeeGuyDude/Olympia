@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.commands.basecommands;
 
-public interface Command {
+public abstract class Command {
 
-    public void initialize();
+    public abstract void initialize();
 
-    public void execute();
+    public abstract void execute();
 
-    public boolean isFinished();
+    public abstract boolean isFinished();
 
-    public void end();
+    public abstract void end();
 
 }
 

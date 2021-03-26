@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 
 import java.util.ArrayList;
 
-public class CommandGroup implements Command {
+public class CommandGroup extends Command {
     private enum commandType {
         SEQUENTIAL,
         PARALLEL

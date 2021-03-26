@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands.actions;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
-public class TestLockingCommand implements Command {
+public class TestLockingCommand extends Command {
 
     public void initialize() {}
 

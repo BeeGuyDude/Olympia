@@ -166,6 +166,10 @@ public class CommandScheduler {
         }
     }
 
+    public boolean isRunning(Command command) {
+        return commandExecutionList.contains(command);
+    }
+
     public void end() {
         for (Command command : rawCommandList) {
             command.end();

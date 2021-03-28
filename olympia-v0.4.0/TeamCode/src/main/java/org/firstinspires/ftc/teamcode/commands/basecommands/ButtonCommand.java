@@ -78,8 +78,12 @@ public class ButtonCommand extends Command {
                 break;
 
             case TOGGLE_WHEN_PRESSED:
+                if (running) {
+                    if (!scheduler.isRunning(wrappedCommand)) running = false;
+                }
+
                 if (buttonStateChange == ButtonStateChange.PRESSED) {
-                    if (running == true) {
+                    if (running) {
                         scheduler.requestCommandTermination(wrappedCommand);
                         running = false;
                     } else {

@@ -128,6 +128,13 @@ abstract class TeleOpModeWrapper extends OpMode {
         telemetry.addData("Right Trigger Value", gamepad1.right_stick_x);
         telemetry.addData("A Button Value", gamepad1.a);
         scheduler.run();
+        scheduler.postCommands(telemetry);
+
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+
+        }
 
         telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
         previousCycleTime = getRuntime();

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.actions;
 
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
+import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 
@@ -18,7 +19,7 @@ public class ExtendIntake extends Command {
     }
 
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     public void end() {

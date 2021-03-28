@@ -68,45 +68,94 @@ public class CommandScheduler {
 
     public void requestCommandExecution(Command command) {
         if (!requestedAdditionList.contains(command)) {
-            requestedAdditionList.add(command);
-        }
-
-        for (Command cachedCommand : requestedAdditionList) {
-            if (!command.getBoundMechanisms().isEmpty()) {
-                for (Mechanism mechanism : command.getBoundMechanisms()) {
-                    if (cachedCommand.getBoundMechanisms().contains(mechanism)) {
-                        requestedAdditionList.remove(cachedCommand);
+            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Not found, attempting initialization");
+            for (Command cachedCommand : requestedAdditionList) {
+                if (!command.getBoundMechanisms().isEmpty()) {
+                    for (Mechanism mechanism : command.getBoundMechanisms()) {
+                        if (cachedCommand.getBoundMechanisms().contains(mechanism)) {
+                            requestedAdditionList.remove(cachedCommand);
+                            TelemetryHandler.getInstance().getTelemetry().addData(cachedCommand.toString(), "Removed");
+                        }
                     }
                 }
             }
+
+            requestedAdditionList.add(command);
+            TelemetryHandler.getInstance().getTelemetry().addData("Execution", command.toString());
         }
     }
 
     public void requestCommandTermination(Command command) {
         if (requestedAdditionList.contains(command)) {
             requestedAdditionList.remove(command);
+            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Removed from request list");
         }
 
         if (commandExecutionList.contains(command)) {
-            if (commandInitializedList.get(commandExecutionList.indexOf(command)) == true) command.end();
+            if (commandInitializedList.get(commandExecutionList.indexOf(command)) == true) {
+                command.end();
+            }
 
             commandInitializedList.remove(commandExecutionList.indexOf(command));
             commandExecutionList.remove(command);
+
+            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Removed from execution list");
         }
     }
 
     public void run() {
+        //Looped command checking
         if (!rawCommandList.isEmpty()) {
             for (Command command : rawCommandList) {
                 boolean passedCheck = true;
 
-                if (commandExecutionList.contains(command)) passedCheck = false;
+                if (commandExecutionList.contains(command)) {
+                    passedCheck = false;
+                    TelemetryHandler.getInstance().getTelemetry().addData("Command detected itself", passedCheck);
+                }
 
                 if (!command.getBoundMechanisms().isEmpty()) {
                     for (Mechanism mechanism : command.getBoundMechanisms()) {
                         if (mechanismLockingCommandMap.containsKey(mechanism)) {
                             if (boundCommandPriority.get(command) == commandPriority.LOW && boundCommandPriority.get(mechanismLockingCommandMap.get(mechanism)) == commandPriority.HIGH) {
                                 passedCheck = false;
+                                TelemetryHandler.getInstance().getTelemetry().addData("Priority Conflict", "Detected");
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (passedCheck) {
+                    
+                    for (Mechanism boundMechanism : command.getBoundMechanisms()) {
+                        if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
+                            mechanismLockingCommandMap.get(boundMechanism).end();
+                            commandInitializedList.remove(commandExecutionList.indexOf(mechanismLockingCommandMap.get(boundMechanism)));
+                            commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                        }
+
+                        mechanismLockingCommandMap.put(boundMechanism, command);
+                    }
+
+                    commandExecutionList.add(command);
+                    commandInitializedList.add(false);
+                }
+
+                TelemetryHandler.getInstance().getTelemetry().addData("passedCheck", passedCheck);
+            }
+        }
+
+        if (!requestedAdditionList.isEmpty()) {
+            for (Command command : requestedAdditionList) {
+                boolean passedCheck = true;
+
+                if (!command.getBoundMechanisms().isEmpty()) {
+                    for (Mechanism mechanism : command.getBoundMechanisms()) {
+                        if (mechanismLockingCommandMap.containsKey(mechanism)) {
+                            if (boundCommandPriority.get(command) == commandPriority.LOW && boundCommandPriority.get(mechanismLockingCommandMap.get(mechanism)) == commandPriority.HIGH) {
+                                passedCheck = false;
+                                TelemetryHandler.getInstance().getTelemetry().addData("Priority Conflict", "Detected");
                                 break;
                             }
                         }
@@ -115,20 +164,28 @@ public class CommandScheduler {
 
                 if (passedCheck) {
                     for (Mechanism boundMechanism : command.getBoundMechanisms()) {
-                        mechanismLockingCommandMap.get(boundMechanism).end();
-                        commandInitializedList.remove(commandExecutionList.indexOf(mechanismLockingCommandMap.get(boundMechanism)));
-                        commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                        if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
+                            mechanismLockingCommandMap.get(boundMechanism).end();
+                            commandInitializedList.remove(commandExecutionList.indexOf(mechanismLockingCommandMap.get(boundMechanism)));
+                            commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                        }
+
+                        mechanismLockingCommandMap.put(boundMechanism, command);
                     }
 
                     commandExecutionList.add(command);
                     commandInitializedList.add(false);
+
+                    requestedAdditionList.remove(command);
                 }
+
+                TelemetryHandler.getInstance().getTelemetry().addData("passedCheck", passedCheck);
             }
         }
 
         if (!commandExecutionList.isEmpty()) {
             for (Command command : commandExecutionList) {
-
+                TelemetryHandler.getInstance().getTelemetry().addData("Executing", command.toString());
                 if (commandInitializedList.get(commandExecutionList.indexOf(command)) == false) {
                     command.initialize();
                     commandInitializedList.set(commandExecutionList.indexOf(command), true);
@@ -161,7 +218,7 @@ public class CommandScheduler {
     }
 
     public void postCommands(Telemetry telemetry) {
-        for (Command command : commandExecutionList) {
+        for (Command command : requestedAdditionList) {
             telemetry.addData(command.toString(), "Initialized");
         }
     }
@@ -256,6 +313,8 @@ public class CommandScheduler {
             }
 
             buttonPressedPreviously = buttonPressed;
+
+            TelemetryHandler.getInstance().getTelemetry().addData("Internal command", wrappedCommand.toString());
         }
 
         public boolean isFinished() {

@@ -18,7 +18,7 @@ public class TestTeleop extends TeleOpModeWrapper {
     @Override
     public void teleOpInit() {
         telemetry.addData("Test", "Success");
-        scheduler.add(new TestTelemetryCommand(telemetry));
+//        scheduler.add(new TestTelemetryCommand(telemetry));
     }
 
     @Override
@@ -26,8 +26,7 @@ public class TestTeleop extends TeleOpModeWrapper {
 //        scheduler.add(new SetIntakePosition(DriverRightXAxis));
 
         DriverAButton.whileHeld(new ExtendIntake());
-//        DriverBButton.whenPressed(new RetractIntake());
-        scheduler.postCommands(telemetry);
+        DriverBButton.whileHeld(new RetractIntake());
     }
 
     @Override

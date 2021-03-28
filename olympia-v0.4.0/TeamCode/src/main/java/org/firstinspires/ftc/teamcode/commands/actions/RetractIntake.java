@@ -7,6 +7,10 @@ import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
 public class RetractIntake extends Command {
     private TestIntake localIntake = MechanismEngine.getInstance().getMechanism(TestIntake.class);
 
+    public RetractIntake() {
+        Requires(localIntake);
+    }
+
     public void initialize() {
 
     }
@@ -16,7 +20,7 @@ public class RetractIntake extends Command {
     }
 
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     public void end() {

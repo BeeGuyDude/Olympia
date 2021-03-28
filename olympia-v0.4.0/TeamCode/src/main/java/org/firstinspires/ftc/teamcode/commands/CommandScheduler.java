@@ -71,6 +71,27 @@ public class CommandScheduler {
         if (!requestedAdditionList.contains(command)) {
             requestedAdditionList.add(command);
         }
+
+        for (Command cachedCommand : requestedAdditionList) {
+            for (Mechanism mechanism : command.getBoundMechanisms()) {
+                if (cachedCommand.getBoundMechanisms().contains(mechanism)) {
+                    requestedAdditionList.remove(cachedCommand);
+                }
+            }
+        }
+    }
+
+    public void requestCommandTermination(Command command) {
+        if (requestedAdditionList.contains(command)) {
+            requestedAdditionList.remove(command);
+        }
+
+        if (commandExecutionList.contains(command)) {
+            if (commandInitializedList.get(commandExecutionList.indexOf(command)) == true) command.end();
+
+            commandInitializedList.remove(commandExecutionList.indexOf(command));
+            commandExecutionList.remove(command);
+        }
     }
 
     public void run() {
@@ -152,7 +173,7 @@ public class CommandScheduler {
     }
 
     public boolean isEmpty() {
-        return rawCommandList.isEmpty();
+        return commandExecutionList.isEmpty();
     }
 
     public void postCommands(Telemetry telemetry) {

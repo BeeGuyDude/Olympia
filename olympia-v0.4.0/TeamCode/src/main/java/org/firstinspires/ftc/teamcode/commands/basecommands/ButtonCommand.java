@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.basecommands;
 
+import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
@@ -9,6 +10,7 @@ public class ButtonCommand extends Command {
     private Command wrappedCommand;
     private Button button;
     private ButtonStateRule rule;
+    private CommandScheduler scheduler;
 
     private boolean buttonPressed = false;
     private boolean buttonPressedPreviously = false;
@@ -22,10 +24,11 @@ public class ButtonCommand extends Command {
     }
     private ButtonStateChange buttonStateChange = ButtonStateChange.NO_CHANGE;
 
-    public ButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
+    public ButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand, CommandScheduler scheduler) {
         this.button = button;
         this.rule = rule;
         this.wrappedCommand = wrappedCommand;
+        this.scheduler = scheduler;
     }
 
     public void initialize() {
@@ -47,9 +50,9 @@ public class ButtonCommand extends Command {
             case WHEN_PRESSED:
                 if (buttonStateChange == ButtonStateChange.PRESSED) {
                     if (running) {
-                        wrappedCommand.end();
+                        scheduler.requestCommandTermination(wrappedCommand);
                     }
-                    wrappedCommand.initialize();
+                    scheduler.requestCommandExecution(wrappedCommand);
                     running = true;
                 }
                 break;
@@ -57,19 +60,19 @@ public class ButtonCommand extends Command {
             case WHEN_RELEASED:
                 if (buttonStateChange == ButtonStateChange.RELEASED) {
                     if (running) {
-                        wrappedCommand.end();
+                        scheduler.requestCommandTermination(wrappedCommand);
                     }
-                    wrappedCommand.initialize();
+                    scheduler.requestCommandExecution(wrappedCommand);
                     running = true;
                 }
                 break;
 
             case WHILE_HELD:
                 if (buttonStateChange == ButtonStateChange.PRESSED) {
-                    wrappedCommand.initialize();
+                    scheduler.requestCommandExecution(wrappedCommand);
                     running = true;
                 } else if (running && buttonStateChange == ButtonStateChange.RELEASED) {
-                    wrappedCommand.end();
+                    scheduler.requestCommandTermination(wrappedCommand);
                     running = false;
                 }
                 break;
@@ -77,22 +80,17 @@ public class ButtonCommand extends Command {
             case TOGGLE_WHEN_PRESSED:
                 if (buttonStateChange == ButtonStateChange.PRESSED) {
                     if (running == true) {
-                        wrappedCommand.end();
+                        scheduler.requestCommandTermination(wrappedCommand);
                         running = false;
                     } else {
-                        wrappedCommand.initialize();
+                        scheduler.requestCommandExecution(wrappedCommand);
                         running = true;
                     }
                 }
                 break;
         }
 
-        if (running) {
-            wrappedCommand.execute();
-        }
-
         if (wrappedCommand.isFinished()) {
-            wrappedCommand.end();
             running = false;
         }
 
@@ -104,7 +102,7 @@ public class ButtonCommand extends Command {
     }
 
     public void end() {
-        wrappedCommand.end();
+
     }
 
 }

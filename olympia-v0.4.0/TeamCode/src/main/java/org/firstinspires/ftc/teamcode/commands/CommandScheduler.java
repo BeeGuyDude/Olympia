@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.basecommands.ButtonCommand;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
 
@@ -17,10 +18,12 @@ public class CommandScheduler {
         HIGH
     }
 
+    private ArrayList<Command> requestedAdditionList = new ArrayList<Command>();
     private ArrayList<Command> rawCommandList = new ArrayList<Command>();
     private Map<Command, commandPriority> boundCommandPriority = new HashMap<Command, commandPriority>();
 
     private Map<Mechanism, ArrayList<Command>> mechanismBindingMap = new HashMap<Mechanism, ArrayList<Command>>();
+    private Map<Mechanism, Command> mechanismLockingCommandMap = new HashMap<Mechanism, Command>();
 
     private ArrayList<Command> commandExecutionList = new ArrayList<Command>();
     private ArrayList<Boolean> commandInitializedList = new ArrayList<Boolean>();
@@ -54,9 +57,19 @@ public class CommandScheduler {
                 } else {
                     mechanismBindingMap.put(mechanism, new ArrayList(Arrays.asList(command)));
                 }
-
-                boundCommandPriority.put(command, commandPriority.HIGH);
             }
+            boundCommandPriority.put(command, commandPriority.HIGH);
+        }
+    }
+
+    public void addButtonCommand(ButtonCommand command) {
+        commandExecutionList.add(command);
+        commandInitializedList.add(false);
+    }
+
+    public void requestCommandExecution(Command command) {
+        if (!requestedAdditionList.contains(command)) {
+            requestedAdditionList.add(command);
         }
     }
 
@@ -88,31 +101,24 @@ public class CommandScheduler {
             for (Command command : rawCommandList) {
                 boolean passedCheck = true;
 
-                if (command.getBoundMechanisms().isEmpty()) {
-                    if (commandExecutionList.contains(command)) {
-                        passedCheck = false;
-                    }
-                } else {
-                    for (Command cachedCommand : commandExecutionList) {
-                        for (Mechanism mechanism : cachedCommand.getBoundMechanisms()) {
-                            if (command.getBoundMechanisms().contains(mechanism)) {
-                                if (boundCommandPriority.get(command) == boundCommandPriority.get(cachedCommand) || boundCommandPriority.get(command) == commandPriority.HIGH) { //Successful Interrupt
-                                    commandTriggeredEndingMap.put(command, cachedCommand);
-                                } else { //Failed Interrupt
-                                    for (Map.Entry<Command, Command> endRequestEntry : commandTriggeredEndingMap.entrySet()) {
-                                        if (endRequestEntry.getKey() == command) {
-                                            commandTriggeredEndingMap.remove(endRequestEntry);
-                                        }
-                                    }
+                if (commandExecutionList.contains(command)) passedCheck = false;
 
-                                    passedCheck = false;
-                                }
-                            }
+                for (Mechanism mechanism : command.getBoundMechanisms()) {
+                    if (mechanismLockingCommandMap.containsKey(mechanism)) {
+                        if (boundCommandPriority.get(command) == commandPriority.LOW && boundCommandPriority.get(mechanismLockingCommandMap.get(mechanism)) == commandPriority.HIGH) {
+                            passedCheck = false;
+                            break;
                         }
                     }
                 }
 
                 if (passedCheck) {
+                    for (Mechanism boundMechanism : command.getBoundMechanisms()) {
+                        mechanismLockingCommandMap.get(boundMechanism).end();
+                        commandInitializedList.remove(commandExecutionList.indexOf(mechanismLockingCommandMap.get(boundMechanism)));
+                        commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                    }
+
                     commandExecutionList.add(command);
                     commandInitializedList.add(false);
                 }

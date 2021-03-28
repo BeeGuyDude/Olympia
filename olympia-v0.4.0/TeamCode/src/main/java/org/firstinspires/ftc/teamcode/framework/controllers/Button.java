@@ -71,18 +71,18 @@ public class Button {
     }
 
     public void whenPressed(Command command) {
-        scheduler.addHighPriority(new ButtonCommand(this, ButtonStateRule.WHEN_PRESSED, command));
+        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.WHEN_PRESSED, command));
     }
 
     public void whenReleased(Command command) {
-        scheduler.addHighPriority(new ButtonCommand(this, ButtonStateRule.WHEN_RELEASED, command));
+        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.WHEN_RELEASED, command));
     }
 
     public void whileHeld(Command command) {
-        scheduler.addHighPriority(new ButtonCommand(this, ButtonStateRule.WHILE_HELD, command));
+        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.WHILE_HELD, command));
     }
 
     public void toggleWhenPressed(Command command) {
-        scheduler.addHighPriority(new ButtonCommand(this, ButtonStateRule.TOGGLE_WHEN_PRESSED, command));
+        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.TOGGLE_WHEN_PRESSED, command));
     }
 }

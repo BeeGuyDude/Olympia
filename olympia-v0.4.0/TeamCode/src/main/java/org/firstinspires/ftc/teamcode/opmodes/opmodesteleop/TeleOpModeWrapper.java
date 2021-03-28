@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
@@ -105,6 +106,8 @@ abstract class TeleOpModeWrapper extends OpMode {
 
         gamepad1.setJoystickDeadzone(CONTROLLER_1_DEADZONE);
         gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
+
+        TelemetryHandler.getInstance().setTelemetry(telemetry);
 
         teleOpInit();
         MechanismEngine.getInstance().setHardwareMap(hardwareMap);

@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.basecommands.ButtonCommand;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
+import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
+import org.firstinspires.ftc.teamcode.framework.controllers.Button;
+import org.firstinspires.ftc.teamcode.framework.util.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
+
+import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,11 +64,6 @@ public class CommandScheduler {
             }
             boundCommandPriority.put(command, commandPriority.HIGH);
         }
-    }
-
-    public void addButtonCommand(ButtonCommand command) {
-        commandExecutionList.add(command);
-        commandInitializedList.add(false);
     }
 
     public void requestCommandExecution(Command command) {
@@ -181,8 +180,109 @@ public class CommandScheduler {
     }
 
     public void postCommands(Telemetry telemetry) {
-        for (Command command : rawCommandList) {
+        for (Command command : commandExecutionList) {
             telemetry.addData(command.toString(), "Initialized");
         }
+    }
+
+    public void addButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
+        commandExecutionList.add(new ButtonCommand(button, rule, wrappedCommand));
+        commandInitializedList.add(false);
+    }
+
+    private class ButtonCommand extends Command {
+
+        private Command wrappedCommand;
+        private Button button;
+        private ButtonStateRule rule;
+
+        private boolean buttonPressed = false;
+        private boolean buttonPressedPreviously = false;
+
+        private boolean running = false;
+
+        private ButtonStateChange buttonStateChange = ButtonStateChange.NO_CHANGE;
+
+        public ButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
+            this.button = button;
+            this.rule = rule;
+            this.wrappedCommand = wrappedCommand;
+        }
+
+        public void initialize() {}
+
+        public void execute() {
+            buttonPressed = button.get();
+
+            if (buttonPressed && !buttonPressedPreviously) {
+                buttonStateChange = ButtonStateChange.PRESSED;
+            } else if (!buttonPressed && buttonPressedPreviously) {
+                buttonStateChange = ButtonStateChange.RELEASED;
+            } else {
+                buttonStateChange = ButtonStateChange.NO_CHANGE;
+            }
+
+            switch (rule) {
+                case WHEN_PRESSED:
+                    if (buttonStateChange == ButtonStateChange.PRESSED) {
+                        if (running) {
+                            requestCommandTermination(wrappedCommand);
+                        }
+                        requestCommandExecution(wrappedCommand);
+                        running = true;
+                    }
+                    break;
+
+                case WHEN_RELEASED:
+                    if (buttonStateChange == ButtonStateChange.RELEASED) {
+                        if (running) {
+                            requestCommandTermination(wrappedCommand);
+                        }
+                        requestCommandExecution(wrappedCommand);
+                        running = true;
+                    }
+                    break;
+
+                case WHILE_HELD:
+                    if (buttonStateChange == ButtonStateChange.PRESSED) {
+                        requestCommandExecution(wrappedCommand);
+                        running = true;
+                    } else if (running && buttonStateChange == ButtonStateChange.RELEASED) {
+                        requestCommandTermination(wrappedCommand);
+                        running = false;
+                    }
+                    break;
+
+                case TOGGLE_WHEN_PRESSED:
+                    if (running) {
+                        if (!isRunning(wrappedCommand)) running = false;
+                    }
+
+                    if (buttonStateChange == ButtonStateChange.PRESSED) {
+                        if (running) {
+                            requestCommandTermination(wrappedCommand);
+                            running = false;
+                        } else {
+                            requestCommandExecution(wrappedCommand);
+                            running = true;
+                        }
+                    }
+                    break;
+            }
+
+            if (wrappedCommand.isFinished()) {
+                running = false;
+            }
+
+            buttonPressedPreviously = buttonPressed;
+
+            TelemetryHandler.getInstance().getTelemetry().addData("ButtonCommand", "Executed");
+        }
+
+        public boolean isFinished() {
+            return false;
+        }
+
+        public void end() {}
     }
 }

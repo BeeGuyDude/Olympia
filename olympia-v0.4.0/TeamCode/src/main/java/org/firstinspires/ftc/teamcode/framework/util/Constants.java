@@ -47,6 +47,12 @@ public class Constants {
         TOGGLE_WHEN_PRESSED
     }
 
+    public enum ButtonStateChange {
+        NO_CHANGE,
+        PRESSED,
+        RELEASED
+    }
+
     //Test Mechanism stuff
     public static final double INTAKE_EXTENDED_POSITION = 1;
     public static final double INTAKE_RETRACTED_POSITION = 0;

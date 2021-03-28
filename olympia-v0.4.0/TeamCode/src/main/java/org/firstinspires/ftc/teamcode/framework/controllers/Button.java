@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.framework.controllers;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
-import org.firstinspires.ftc.teamcode.commands.basecommands.ButtonCommand;
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
@@ -71,18 +70,18 @@ public class Button {
     }
 
     public void whenPressed(Command command) {
-        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.WHEN_PRESSED, command, scheduler));
+        scheduler.addButtonCommand(this, ButtonStateRule.WHEN_PRESSED, command);
     }
 
     public void whenReleased(Command command) {
-        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.WHEN_RELEASED, command, scheduler));
+        scheduler.addButtonCommand(this, ButtonStateRule.WHEN_RELEASED, command);
     }
 
     public void whileHeld(Command command) {
-        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.WHILE_HELD, command, scheduler));
+        scheduler.addButtonCommand(this, ButtonStateRule.WHILE_HELD, command);
     }
 
     public void toggleWhenPressed(Command command) {
-        scheduler.addButtonCommand(new ButtonCommand(this, ButtonStateRule.TOGGLE_WHEN_PRESSED, command, scheduler));
+        scheduler.addButtonCommand(this, ButtonStateRule.TOGGLE_WHEN_PRESSED, command);
     }
 }

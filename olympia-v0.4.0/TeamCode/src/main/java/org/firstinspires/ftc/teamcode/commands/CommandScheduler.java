@@ -32,8 +32,6 @@ public class CommandScheduler {
     private ArrayList<Command> commandExecutionList = new ArrayList<Command>();
     private ArrayList<Boolean> commandInitializedList = new ArrayList<Boolean>();
 
-    private Map<Command, Command> commandTriggeredEndingMap = new HashMap<Command, Command>();
-
     public void add(Command command) {
         rawCommandList.add(command);
 
@@ -55,14 +53,16 @@ public class CommandScheduler {
         commandInitializedList.add(false);
 
         if (!command.getBoundMechanisms().isEmpty()) {
-            for (Mechanism mechanism : command.getBoundMechanisms()) {
-                if (mechanismBindingMap.containsKey(mechanism)) {
-                    mechanismBindingMap.get(mechanism).add(command);
-                } else {
-                    mechanismBindingMap.put(mechanism, new ArrayList(Arrays.asList(command)));
+            if (!command.getBoundMechanisms().isEmpty()) {
+                for (Mechanism mechanism : command.getBoundMechanisms()) {
+                    if (mechanismBindingMap.containsKey(mechanism)) {
+                        mechanismBindingMap.get(mechanism).add(command);
+                    } else {
+                        mechanismBindingMap.put(mechanism, new ArrayList(Arrays.asList(command)));
+                    }
                 }
+                boundCommandPriority.put(command, commandPriority.HIGH);
             }
-            boundCommandPriority.put(command, commandPriority.HIGH);
         }
     }
 
@@ -72,9 +72,11 @@ public class CommandScheduler {
         }
 
         for (Command cachedCommand : requestedAdditionList) {
-            for (Mechanism mechanism : command.getBoundMechanisms()) {
-                if (cachedCommand.getBoundMechanisms().contains(mechanism)) {
-                    requestedAdditionList.remove(cachedCommand);
+            if (!command.getBoundMechanisms().isEmpty()) {
+                for (Mechanism mechanism : command.getBoundMechanisms()) {
+                    if (cachedCommand.getBoundMechanisms().contains(mechanism)) {
+                        requestedAdditionList.remove(cachedCommand);
+                    }
                 }
             }
         }
@@ -94,40 +96,19 @@ public class CommandScheduler {
     }
 
     public void run() {
-
         if (!rawCommandList.isEmpty()) {
-            for (Command command : rawCommandList) {
-
-                if (commandInitializedList.get(rawCommandList.indexOf(command)) == false) {
-                    command.initialize();
-                    commandInitializedList.set(rawCommandList.indexOf(command), true);
-                }
-
-                command.execute();
-
-                if (command.isFinished()) {
-                    command.end();
-
-                    commandInitializedList.remove(rawCommandList.indexOf(command));
-                    rawCommandList.remove(command);
-                }
-            }
-        }
-    }
-
-    public void updatedRun() {
-        if (!rawCommandList.isEmpty()) {
-
             for (Command command : rawCommandList) {
                 boolean passedCheck = true;
 
                 if (commandExecutionList.contains(command)) passedCheck = false;
 
-                for (Mechanism mechanism : command.getBoundMechanisms()) {
-                    if (mechanismLockingCommandMap.containsKey(mechanism)) {
-                        if (boundCommandPriority.get(command) == commandPriority.LOW && boundCommandPriority.get(mechanismLockingCommandMap.get(mechanism)) == commandPriority.HIGH) {
-                            passedCheck = false;
-                            break;
+                if (!command.getBoundMechanisms().isEmpty()) {
+                    for (Mechanism mechanism : command.getBoundMechanisms()) {
+                        if (mechanismLockingCommandMap.containsKey(mechanism)) {
+                            if (boundCommandPriority.get(command) == commandPriority.LOW && boundCommandPriority.get(mechanismLockingCommandMap.get(mechanism)) == commandPriority.HIGH) {
+                                passedCheck = false;
+                                break;
+                            }
                         }
                     }
                 }
@@ -148,9 +129,9 @@ public class CommandScheduler {
         if (!commandExecutionList.isEmpty()) {
             for (Command command : commandExecutionList) {
 
-                if (commandInitializedList.get(rawCommandList.indexOf(command)) == false) {
+                if (commandInitializedList.get(commandExecutionList.indexOf(command)) == false) {
                     command.initialize();
-                    commandInitializedList.set(rawCommandList.indexOf(command), true);
+                    commandInitializedList.set(commandExecutionList.indexOf(command), true);
                 }
 
                 command.execute();
@@ -158,7 +139,7 @@ public class CommandScheduler {
                 if (command.isFinished()) {
                     command.end();
 
-                    commandInitializedList.remove(rawCommandList.indexOf(command));
+                    commandInitializedList.remove(commandExecutionList.indexOf(command));
                     commandExecutionList.remove(command);
                 }
             }
@@ -275,8 +256,6 @@ public class CommandScheduler {
             }
 
             buttonPressedPreviously = buttonPressed;
-
-            TelemetryHandler.getInstance().getTelemetry().addData("ButtonCommand", "Executed");
         }
 
         public boolean isFinished() {

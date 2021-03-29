@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.actions.TestCommand;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
@@ -10,10 +9,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 
@@ -25,42 +21,35 @@ public class CommandScheduler {
     }
 
     private ArrayList<Command> requestedAdditionList = new ArrayList<Command>();
-    private ArrayList<Command> rawCommandList = new ArrayList<Command>();
+    private ArrayList<Command> loopedCommandList = new ArrayList<Command>();
     private Map<Command, CommandPriority> commandPriority = new HashMap<Command, CommandPriority>();
 
     private Map<Mechanism, Command> mechanismLockingCommandMap = new HashMap<Mechanism, Command>();
 
     private ArrayList<Command> commandExecutionList = new ArrayList<Command>();
-    private ArrayList<Boolean> commandInitializedList = new ArrayList<Boolean>();
+    private Map<Command, Boolean> commandInitializedMap = new HashMap<Command, Boolean>();
 
-    private ArrayList<Command> finishedAndRemovedCommands = new ArrayList<Command>();
+    private ArrayList<Command> removedCommandList = new ArrayList<Command>();
 
     public void add(Command command) {
-        rawCommandList.add(command);
+        loopedCommandList.add(command);
         commandPriority.put(command, CommandPriority.LOW);
-    }
-
-    public void addUninterruptible(Command command) {
-        rawCommandList.add(command);
-        commandPriority.put(command, CommandPriority.HIGH);
     }
 
     public void requestCommandExecution(Command command) {
         if (!requestedAdditionList.contains(command)) {
             ArrayList<Command> requestedListRemovalList = new ArrayList<Command>();
-            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Not found, attempting initialization");
             for (Command cachedCommand : requestedAdditionList) {
                 if (!command.getBoundMechanisms().isEmpty()) {
                     for (Mechanism mechanism : command.getBoundMechanisms()) {
                         if (cachedCommand.getBoundMechanisms().contains(mechanism)) {
                             requestedListRemovalList.add(cachedCommand);
-                            TelemetryHandler.getInstance().getTelemetry().addData(cachedCommand.toString(), "Removed");
                         }
                     }
                 }
             }
 
-            TelemetryHandler.getInstance().getTelemetry().addData("Execution", command.toString());
+            TelemetryHandler.getInstance().getTelemetry().addData("Requested Execution for", command.toString());
             requestedAdditionList.add(command);
 
             requestedAdditionList.removeAll(requestedListRemovalList);
@@ -75,26 +64,24 @@ public class CommandScheduler {
         }
 
         if (commandExecutionList.contains(command)) {
-            if (commandInitializedList.get(commandExecutionList.indexOf(command)) == true) {
+            if (commandInitializedMap.get(command) == true) {
                 command.end();
             }
 
-            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Removed from execution list");
+            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Attempted to remove from Execution List");
 
-            commandInitializedList.remove(commandExecutionList.indexOf(command));
-            finishedAndRemovedCommands.add(command);
+            removedCommandList.add(command);
         }
     }
 
     public void run() {
         //Looped Command Checking
-        if (!rawCommandList.isEmpty()) {
-            for (Command command : rawCommandList) {
+        if (!loopedCommandList.isEmpty()) {
+            for (Command command : loopedCommandList) {
                 boolean passedCheck = true;
 
                 if (commandExecutionList.contains(command)) {
                     passedCheck = false;
-                    TelemetryHandler.getInstance().getTelemetry().addData("Command detected itself", passedCheck);
                 }
 
                 if (!command.getBoundMechanisms().isEmpty()) {
@@ -113,18 +100,17 @@ public class CommandScheduler {
                     for (Mechanism boundMechanism : command.getBoundMechanisms()) {
                         if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
                             mechanismLockingCommandMap.get(boundMechanism).end();
-                            commandInitializedList.remove(commandExecutionList.indexOf(mechanismLockingCommandMap.get(boundMechanism)));
+                            commandInitializedMap.remove(mechanismLockingCommandMap.get(boundMechanism));
                             commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
                         }
 
                         mechanismLockingCommandMap.put(boundMechanism, command);
+                        TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + "now bound to", command.toString());
                     }
 
                     commandExecutionList.add(command);
-                    commandInitializedList.add(false);
+                    commandInitializedMap.put(command, false);
                 }
-
-                TelemetryHandler.getInstance().getTelemetry().addData("passedCheck", passedCheck);
             }
         }
 
@@ -136,6 +122,7 @@ public class CommandScheduler {
 
                 if (!command.getBoundMechanisms().isEmpty()) {
                     for (Mechanism mechanism : command.getBoundMechanisms()) {
+                        TelemetryHandler.getInstance().getTelemetry().addData("Checking mechanism", mechanism.toString());
                         if (mechanismLockingCommandMap.containsKey(mechanism)) {
                             if (commandPriority.get(command) == CommandPriority.LOW && commandPriority.get(mechanismLockingCommandMap.get(mechanism)) == CommandPriority.HIGH) {
                                 passedCheck = false;
@@ -150,17 +137,16 @@ public class CommandScheduler {
                     for (Mechanism boundMechanism : command.getBoundMechanisms()) {
                         if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
                             mechanismLockingCommandMap.get(boundMechanism).end();
-                            commandInitializedList.remove(commandExecutionList.indexOf(mechanismLockingCommandMap.get(boundMechanism)));
+                            commandInitializedMap.remove(mechanismLockingCommandMap.get(boundMechanism));
                             commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
                         }
 
                         mechanismLockingCommandMap.put(boundMechanism, command);
+                        TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + "now bound to", command.toString());
                     }
 
                     commandExecutionList.add(command);
-                    commandInitializedList.add(false);
-                    TelemetryHandler.getInstance().getTelemetry().addData("False", "Added to initialized List");
-
+                    commandInitializedMap.put(command, false);
 
                     executedAndRemovedCommands.add(command);
                 }
@@ -174,9 +160,10 @@ public class CommandScheduler {
         if (!commandExecutionList.isEmpty()) {
             for (Command command : commandExecutionList) {
                 TelemetryHandler.getInstance().getTelemetry().addData("Executing", command.toString());
-                if (commandInitializedList.get(commandExecutionList.indexOf(command)) == false) {
+
+                if (commandInitializedMap.get(command) == false) {
                     command.initialize();
-                    commandInitializedList.set(commandExecutionList.indexOf(command), true);
+                    commandInitializedMap.put(command, true);
                 }
 
                 command.execute();
@@ -184,12 +171,13 @@ public class CommandScheduler {
                 if (command.isFinished()) {
                     command.end();
 
-                    commandInitializedList.remove(commandExecutionList.indexOf(command));
-                    finishedAndRemovedCommands.add(command);
+                    removedCommandList.add(command);
                 }
             }
-            commandExecutionList.removeAll(finishedAndRemovedCommands);
-            finishedAndRemovedCommands.clear();
+
+            for (Command removedCommand : removedCommandList) commandInitializedMap.remove(removedCommand);
+            commandExecutionList.removeAll(removedCommandList);
+            removedCommandList.clear();
         }
     }
 
@@ -198,7 +186,7 @@ public class CommandScheduler {
     }
 
     public void end() {
-        for (Command command : rawCommandList) {
+        for (Command command : loopedCommandList) {
             command.end();
         }
     }
@@ -208,20 +196,21 @@ public class CommandScheduler {
     }
 
     public void postCommands(Telemetry telemetry) {
-        for (Command command : rawCommandList) {
-            telemetry.addData(command.toString(), "In Looped List");
-        }
-        for (Command command : requestedAdditionList) {
-            telemetry.addData(command.toString(), "In Requested List");
-        }
-        for (Command command : commandExecutionList) {
-            telemetry.addData(command.toString(), "In Execution List");
-        }
+//        for (Command command : loopedCommandList) {
+//            telemetry.addData(command.toString(), "In Looped List");
+//        }
+//        for (Command command : requestedAdditionList) {
+//            telemetry.addData(command.toString(), "In Requested List");
+//        }
+//        for (Command command : commandExecutionList) {
+//            telemetry.addData(command.toString(), "In Execution List");
+//        }
     }
 
     public void addButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
-        commandExecutionList.add(new ButtonCommand(button, rule, wrappedCommand));
-        commandInitializedList.add(false);
+        ButtonCommand localButtonCommand = new ButtonCommand(button, rule, wrappedCommand);
+        commandExecutionList.add(localButtonCommand);
+        commandInitializedMap.put(localButtonCommand, false);
     }
 
     private class ButtonCommand extends Command {
@@ -309,7 +298,6 @@ public class CommandScheduler {
             }
 
             buttonPressedPreviously = buttonPressed;
-
         }
 
         public boolean isFinished() {

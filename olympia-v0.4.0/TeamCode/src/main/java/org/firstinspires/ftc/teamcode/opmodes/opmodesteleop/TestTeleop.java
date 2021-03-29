@@ -23,10 +23,10 @@ public class TestTeleop extends TeleOpModeWrapper {
 
     @Override
     public void teleOpLoop() {
-//        scheduler.add(new SetIntakePosition(DriverRightXAxis));
+        scheduler.add(new SetIntakePosition(DriverRightXAxis));
 
         DriverAButton.whileHeld(new ExtendIntake());
-//        DriverBButton.whileHeld(new RetractIntake());
+        DriverBButton.whileHeld(new RetractIntake());
     }
 
     @Override

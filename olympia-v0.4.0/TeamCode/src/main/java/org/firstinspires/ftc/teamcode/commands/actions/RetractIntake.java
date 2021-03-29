@@ -20,7 +20,7 @@ public class RetractIntake extends Command {
     }
 
     public boolean isFinished() {
-        return false;
+        return true;
     }
 
     public void end() {

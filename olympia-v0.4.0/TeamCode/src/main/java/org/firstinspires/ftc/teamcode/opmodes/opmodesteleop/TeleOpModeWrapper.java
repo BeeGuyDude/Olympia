@@ -130,11 +130,9 @@ abstract class TeleOpModeWrapper extends OpMode {
         scheduler.run();
         scheduler.postCommands(telemetry);
 
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-
-        }
+//        try {
+//            Thread.sleep(1000);
+//        } catch (Exception e) {}
 
         telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
         previousCycleTime = getRuntime();

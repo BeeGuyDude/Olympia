@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
-import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
+import org.firstinspires.ftc.teamcode.framework.util.TelemetryHandler;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
-import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
+import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.Mechanism;
 
-import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.Constants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

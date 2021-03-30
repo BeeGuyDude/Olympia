@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.commands.actions;
+package org.firstinspires.ftc.teamcode.commands.looped;
 
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
-import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
-import org.firstinspires.ftc.teamcode.mechanisms.TestIntake;
+import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.MechanismEngine;
+import org.firstinspires.ftc.teamcode.mechanisms.ExampleServoMechanism;
 
-public class SetIntakePosition extends Command {
-    private TestIntake localIntake = MechanismEngine.getInstance().getMechanism(TestIntake.class);
+public class ExampleSetServoPositionToAxis extends Command {
+    private ExampleServoMechanism localIntake = MechanismEngine.getInstance().getMechanism(ExampleServoMechanism.class);
     private Axis inputAxis;
 
-    public SetIntakePosition(Axis inputAxis) {
+    public ExampleSetServoPositionToAxis(Axis inputAxis) {
         Requires(localIntake);
 
         this.inputAxis = inputAxis;

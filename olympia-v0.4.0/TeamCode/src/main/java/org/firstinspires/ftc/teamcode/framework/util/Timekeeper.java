@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.framework;
+package org.firstinspires.ftc.teamcode.framework.util;
 
-import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.Constants.*;
 
 public class Timekeeper {
     private double previousCycleTime = 0;

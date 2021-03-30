@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.commands.actions;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
+import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 
-public class TestSecondTelemetryCommand extends Command {
+public class ExampleTelemetryCommand extends Command {
     private Telemetry localTelem;
 
-    public TestSecondTelemetryCommand(Telemetry testTelem) {
+    public ExampleTelemetryCommand(Telemetry testTelem) {
         this.localTelem = testTelem;
     }
 
@@ -15,7 +16,7 @@ public class TestSecondTelemetryCommand extends Command {
     }
 
     public void execute() {
-        localTelem.addData("Test", "YOOOOOOOOOOOOOOOOO");
+        localTelem.addData("Test", "AYYYYYYYYYYYYYYYYYYYY");
     }
 
     public boolean isFinished() {

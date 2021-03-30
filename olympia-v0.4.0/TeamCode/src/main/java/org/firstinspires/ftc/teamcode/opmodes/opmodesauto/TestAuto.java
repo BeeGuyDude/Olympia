@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesauto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.commands.actions.TestSecondTelemetryCommand;
-import org.firstinspires.ftc.teamcode.commands.actions.TestTelemetryCommand;
-
 @Autonomous
 public class TestAuto extends AutoOpModeWrapper {
 

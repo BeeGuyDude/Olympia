@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.mechanisms.devicehandlers.ServoHandler;
+import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.Mechanism;
 
-import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.Constants.*;
 
-public class TestIntake extends Mechanism {
+public class ExampleServoMechanism extends Mechanism {
 
     private boolean extended = false;
     private ServoHandler myServo = new ServoHandler("servo");
@@ -18,12 +18,12 @@ public class TestIntake extends Mechanism {
     }
 
     public void extend() {
-        myServo.setPosition(INTAKE_EXTENDED_POSITION);
+        myServo.setPosition(EXAMPLE_SERVO_EXTENDED_POSITION);
         extended = true;
     }
 
     public void retract() {
-        myServo.setPosition(INTAKE_RETRACTED_POSITION);
+        myServo.setPosition(EXAMPLE_SERVO_RETRACTED_POSITION);
         extended = false;
     }
 

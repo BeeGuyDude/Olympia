@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.actions.ExtendIntake;
-import org.firstinspires.ftc.teamcode.commands.actions.RetractIntake;
-import org.firstinspires.ftc.teamcode.commands.actions.SetIntakePosition;
+import org.firstinspires.ftc.teamcode.commands.actions.ExampleExtendServo;
+import org.firstinspires.ftc.teamcode.commands.actions.ExampleRetractServo;
+import org.firstinspires.ftc.teamcode.commands.looped.ExampleSetServoPositionToAxis;
 
 @TeleOp
 public class TestTeleop extends TeleOpModeWrapper {
@@ -16,10 +16,10 @@ public class TestTeleop extends TeleOpModeWrapper {
 
     @Override
     public void teleOpLoop() {
-        scheduler.add(new SetIntakePosition(DriverRightXAxis));
+        scheduler.add(new ExampleSetServoPositionToAxis(DriverRightXAxis));
 
-        DriverAButton.whileHeld(new ExtendIntake());
-        DriverBButton.whileHeld(new RetractIntake());
+        DriverAButton.whileHeld(new ExampleExtendServo());
+        DriverBButton.whileHeld(new ExampleRetractServo());
     }
 
 }

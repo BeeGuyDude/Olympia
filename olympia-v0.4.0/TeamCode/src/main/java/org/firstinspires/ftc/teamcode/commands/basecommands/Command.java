@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.basecommands;
 
-import org.firstinspires.ftc.teamcode.mechanisms.Mechanism;
+import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.Mechanism;
 
 import java.util.ArrayList;
 

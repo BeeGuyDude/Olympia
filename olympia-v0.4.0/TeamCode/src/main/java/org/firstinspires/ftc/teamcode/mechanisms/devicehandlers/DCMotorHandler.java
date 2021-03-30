@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.Constants.*;
 
 public class DCMotorHandler {
     private boolean flipped;

@@ -2,15 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
-import org.firstinspires.ftc.teamcode.framework.Timekeeper;
+import org.firstinspires.ftc.teamcode.framework.util.TelemetryHandler;
+import org.firstinspires.ftc.teamcode.framework.util.Timekeeper;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
-import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
+import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.MechanismEngine;
 
-import java.sql.Time;
-
-import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.Constants.*;
 
 abstract class TeleOpModeWrapper extends OpMode {
 

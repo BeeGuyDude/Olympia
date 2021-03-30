@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.framework.util;
+package org.firstinspires.ftc.teamcode.framework;
 
 /*
   <------------INCLUDE LINE - NONSTANDARD------------------------------------>
-    import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
+    import static org.firstinspires.ftc.teamcode.framework.Constants.*;
   <-------------------------------------------------------------------------->
 */
 
@@ -57,7 +57,7 @@ public class Constants {
     public static final int CYCLE_TIME_HISTORY_LENGTH = 200;
 
     //Test Mechanism stuff
-    public static final double INTAKE_EXTENDED_POSITION = 1;
-    public static final double INTAKE_RETRACTED_POSITION = 0;
+    public static final double EXAMPLE_SERVO_EXTENDED_POSITION = 1;
+    public static final double EXAMPLE_SERVO_RETRACTED_POSITION = 0;
 
 }

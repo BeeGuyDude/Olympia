@@ -11,7 +11,7 @@ public class TestTeleop extends TeleOpModeWrapper {
 
     @Override
     public void teleOpInit() {
-        scheduler.add(new TestTelemetryCommand(telemetry));
+        scheduler.enableDebugTelemetry();
     }
 
     @Override

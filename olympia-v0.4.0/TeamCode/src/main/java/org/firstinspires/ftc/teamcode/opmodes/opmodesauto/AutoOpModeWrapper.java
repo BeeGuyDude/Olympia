@@ -31,10 +31,10 @@ abstract class AutoOpModeWrapper extends OpMode {
 
     @Override
     public void loop() {
-        scheduler.run();
-
         telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
         previousCycleTime = getRuntime();
+
+        scheduler.run();
     }
     public abstract void autoLoop();
 

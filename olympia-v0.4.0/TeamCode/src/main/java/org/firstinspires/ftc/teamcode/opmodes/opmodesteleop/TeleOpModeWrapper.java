@@ -117,16 +117,20 @@ abstract class TeleOpModeWrapper extends OpMode {
             scheduler.run();
         }
 
+        scheduler.beginCheckingCommands();
+        scheduler.scrubCommands();
+
         teleOpLoop();
         MechanismEngine.getInstance().initializeMechanisms();
         //yes I know it does it twice, you don't know if some mechanisms aren't used yet until the loop portion
+
+        telemetry.addData("Initialization phase", "Succeeded.");
     }
     public abstract void teleOpInit();
 
     @Override
     public void loop() {
         scheduler.run();
-        scheduler.postCommands(telemetry);
 
         telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
         previousCycleTime = getRuntime();
@@ -135,9 +139,11 @@ abstract class TeleOpModeWrapper extends OpMode {
 
     @Override
     public void stop() {
-        teleOpStop();
-
         scheduler.end();
+        scheduler.stopCheckingCommands();
+        scheduler.scrubCommands();
+
+        teleOpStop();
     }
     public abstract void teleOpStop();
 }

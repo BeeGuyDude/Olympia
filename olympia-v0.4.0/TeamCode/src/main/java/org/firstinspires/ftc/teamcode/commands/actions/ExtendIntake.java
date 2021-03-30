@@ -19,7 +19,7 @@ public class ExtendIntake extends Command {
     }
 
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     public void end() {

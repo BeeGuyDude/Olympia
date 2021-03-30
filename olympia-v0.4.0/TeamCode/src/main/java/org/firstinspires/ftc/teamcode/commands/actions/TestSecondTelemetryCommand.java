@@ -15,7 +15,7 @@ public class TestSecondTelemetryCommand extends Command {
     }
 
     public void execute() {
-        localTelem.addData("Test", "AYYYYYYYYYYYYYYYYYYYY");
+        localTelem.addData("Test", "YOOOOOOOOOOOOOOOOO");
     }
 
     public boolean isFinished() {

@@ -8,7 +8,5 @@ public class TestCommandGroup extends CommandGroup {
         addParallel(new TestCommand());
         addSequential(new TestCommand());
         addSequential(new TestCommand());
-
     }
-
 }

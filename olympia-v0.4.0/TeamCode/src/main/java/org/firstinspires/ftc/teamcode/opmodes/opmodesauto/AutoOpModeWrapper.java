@@ -22,6 +22,10 @@ abstract class AutoOpModeWrapper extends OpMode {
         autoLoop();
         MechanismEngine.getInstance().initializeMechanisms();
         //yes I know it does it twice, you don't know if some mechanisms aren't used yet until the loop portion
+
+        scheduler.scrubCommands();
+
+        telemetry.addData("Initialization phase", "Succeeded.");
     }
     public abstract void autoInit();
 
@@ -36,8 +40,10 @@ abstract class AutoOpModeWrapper extends OpMode {
 
     @Override
     public void stop() {
-        autoStop();
         scheduler.end();
+        scheduler.scrubCommands();
+
+        autoStop();
     }
     public abstract void autoStop();
 }

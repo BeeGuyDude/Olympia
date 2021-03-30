@@ -31,6 +31,41 @@ public class CommandScheduler {
 
     private ArrayList<Command> removedCommandList = new ArrayList<Command>();
 
+    private boolean checkingCommands = false;
+    private boolean postingDebugTelemetry = false;
+
+    public void beginCheckingCommands() {
+        checkingCommands = true;
+    }
+
+    public void stopCheckingCommands() {
+        checkingCommands = false;
+    }
+
+    public void scrubCommands() {
+        for (Command command : loopedCommandList) {
+            commandPriorityMap.remove(command);
+        }
+        loopedCommandList.clear();
+
+        for (Command command : requestedAdditionList) {
+            commandPriorityMap.remove(command);
+        }
+        requestedAdditionList.clear();
+
+        for (Command command : commandExecutionList) {
+            commandPriorityMap.remove(command);
+        }
+        commandExecutionList.clear();
+        commandInitializedMap.clear();
+
+        removedCommandList.clear();
+    }
+
+    public void enableDebugTelemetry() {
+        postingDebugTelemetry = true;
+    }
+
     public void add(Command command) {
         loopedCommandList.add(command);
         commandPriorityMap.put(command, CommandPriority.LOW);
@@ -49,7 +84,7 @@ public class CommandScheduler {
                 }
             }
 
-            TelemetryHandler.getInstance().getTelemetry().addData("Requested Execution for", command.toString());
+            if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Requested Execution for", command.toString());
             requestedAdditionList.add(command);
 
             if (!commandPriorityMap.containsKey(command)) commandPriorityMap.put(command, CommandPriority.HIGH);
@@ -61,7 +96,7 @@ public class CommandScheduler {
 
     public void requestCommandTermination(Command command) {
         if (requestedAdditionList.contains(command)) {
-            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Removed from request list");
+            if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Removed from request list");
             requestedAdditionList.remove(command);
         }
 
@@ -70,7 +105,7 @@ public class CommandScheduler {
                 command.end();
             }
 
-            TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Attempted to remove from Execution List");
+            if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Attempted to remove from Execution List");
 
             for (Mechanism boundMechanism : command.getBoundMechanisms()) if (mechanismLockingCommandMap.containsKey(boundMechanism)) mechanismLockingCommandMap.remove(boundMechanism);
             removedCommandList.add(command);
@@ -78,95 +113,91 @@ public class CommandScheduler {
     }
 
     public void run() {
-        //Looped Command Checking
-        if (!loopedCommandList.isEmpty()) {
-            for (Command command : loopedCommandList) {
-                boolean passedCheck = true;
+        if (checkingCommands) {
+            //Looped Command Checking
+            if (!loopedCommandList.isEmpty()) {
+                for (Command command : loopedCommandList) {
+                    boolean passedCheck = true;
 
-                if (commandExecutionList.contains(command)) {
-                    passedCheck = false;
-                }
+                    if (commandExecutionList.contains(command)) {
+                        passedCheck = false;
+                    }
 
-                if (!command.getBoundMechanisms().isEmpty()) {
-                    TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Is checking its Mechanisms");
-                    for (Mechanism mechanism : command.getBoundMechanisms()) {
-                        if (mechanismLockingCommandMap.containsKey(mechanism)) {
-                            if (commandPriorityMap.get(command) == CommandPriority.LOW && commandPriorityMap.get(mechanismLockingCommandMap.get(mechanism)) == CommandPriority.HIGH) {
-                                passedCheck = false;
-                                TelemetryHandler.getInstance().getTelemetry().addData("Priority Conflict", "Detected");
-                                break;
+                    if (!command.getBoundMechanisms().isEmpty()) {
+                        for (Mechanism mechanism : command.getBoundMechanisms()) {
+                            if (mechanismLockingCommandMap.containsKey(mechanism)) {
+                                if (commandPriorityMap.get(command) == CommandPriority.LOW && commandPriorityMap.get(mechanismLockingCommandMap.get(mechanism)) == CommandPriority.HIGH) {
+                                    passedCheck = false;
+                                    if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Priority Conflict", "Failed by " + command.toString());
+                                    break;
+                                }
                             }
                         }
                     }
-                }
-                TelemetryHandler.getInstance().getTelemetry().addData("Did " + command.toString() + " pass its check?", passedCheck);
-                if (passedCheck) {
-                    for (Mechanism boundMechanism : command.getBoundMechanisms()) {
-                        if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
-                            mechanismLockingCommandMap.get(boundMechanism).end();
-                            commandInitializedMap.remove(mechanismLockingCommandMap.get(boundMechanism));
-                            commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+
+                    if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Did " + command.toString() + " pass its check?", passedCheck);
+                    if (passedCheck) {
+                        for (Mechanism boundMechanism : command.getBoundMechanisms()) {
+                            if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
+                                mechanismLockingCommandMap.get(boundMechanism).end();
+                                commandInitializedMap.remove(mechanismLockingCommandMap.get(boundMechanism));
+                                commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                            }
+
+                            mechanismLockingCommandMap.put(boundMechanism, command);
+                            if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + "now bound to", command.toString());
                         }
 
-                        mechanismLockingCommandMap.put(boundMechanism, command);
-                        TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + "now bound to", command.toString());
+                        commandExecutionList.add(command);
+                        commandInitializedMap.put(command, false);
                     }
-
-                    commandExecutionList.add(command);
-                    commandInitializedMap.put(command, false);
                 }
             }
-        }
 
-        //Requested Command Checking
-        if (!requestedAdditionList.isEmpty()) {
-            ArrayList<Command> executedAndRemovedCommands = new ArrayList <Command>();
-            for (Command command : requestedAdditionList) {
-                boolean passedCheck = true;
+            //Requested Command Checking
+            if (!requestedAdditionList.isEmpty()) {
+                ArrayList<Command> executedAndRemovedCommands = new ArrayList<Command>();
+                for (Command command : requestedAdditionList) {
+                    boolean passedCheck = true;
 
-                if (!command.getBoundMechanisms().isEmpty()) {
-                    TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Is checking its Mechanisms");
-                    TelemetryHandler.getInstance().getTelemetry().update();
-                    for (Mechanism mechanism : command.getBoundMechanisms()) {
-                        TelemetryHandler.getInstance().getTelemetry().addData("Checking mechanism", mechanism.toString());
-                        if (mechanismLockingCommandMap.containsKey(mechanism)) {
-                            if (commandPriorityMap.get(command) == CommandPriority.LOW && commandPriorityMap.get(mechanismLockingCommandMap.get(mechanism)) == CommandPriority.HIGH) {
-                                passedCheck = false;
-                                TelemetryHandler.getInstance().getTelemetry().addData("Priority Conflict", "Detected");
-                                break;
+                    if (!command.getBoundMechanisms().isEmpty()) {
+                        for (Mechanism mechanism : command.getBoundMechanisms()) {
+                            if (mechanismLockingCommandMap.containsKey(mechanism)) {
+                                if (commandPriorityMap.get(command) == CommandPriority.LOW && commandPriorityMap.get(mechanismLockingCommandMap.get(mechanism)) == CommandPriority.HIGH) {
+                                    passedCheck = false;
+                                    if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Priority Conflict", "Failed by " + command.toString());
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                if (passedCheck) {
-                    for (Mechanism boundMechanism : command.getBoundMechanisms()) {
-                        if (mechanismLockingCommandMap.containsKey(boundMechanism)) {
-                            mechanismLockingCommandMap.get(boundMechanism).end();
-                            commandInitializedMap.remove(mechanismLockingCommandMap.get(boundMechanism));
-                            commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                    if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Did " + command.toString() + " pass its check?", passedCheck);
+                    if (passedCheck) {
+                        for (Mechanism boundMechanism : command.getBoundMechanisms()) {
+                            if (mechanismLockingCommandMap.containsKey(boundMechanism)) {
+                                mechanismLockingCommandMap.get(boundMechanism).end();
+                                commandInitializedMap.remove(mechanismLockingCommandMap.get(boundMechanism));
+                                commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
+                            }
+
+                            mechanismLockingCommandMap.put(boundMechanism, command);
+                            if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + " now bound to ", command.toString());
                         }
 
-                        mechanismLockingCommandMap.put(boundMechanism, command);
-                        TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + " now bound to ", command.toString());
+                        commandExecutionList.add(command);
+                        commandInitializedMap.put(command, false);
+
+                        executedAndRemovedCommands.add(command);
                     }
-
-                    commandExecutionList.add(command);
-                    commandInitializedMap.put(command, false);
-
-                    executedAndRemovedCommands.add(command);
                 }
-
-                TelemetryHandler.getInstance().getTelemetry().addData("passedCheck", passedCheck);
+                requestedAdditionList.removeAll(executedAndRemovedCommands);
+                executedAndRemovedCommands.clear();
             }
-            requestedAdditionList.removeAll(executedAndRemovedCommands);
-            executedAndRemovedCommands.clear();
         }
 
         if (!commandExecutionList.isEmpty()) {
             for (Command command : commandExecutionList) {
-//                TelemetryHandler.getInstance().getTelemetry().addData("Executing", command.toString());
-
                 if (commandInitializedMap.get(command) == false) {
                     command.initialize();
                     commandInitializedMap.put(command, true);
@@ -191,6 +222,8 @@ public class CommandScheduler {
             commandExecutionList.removeAll(removedCommandList);
             removedCommandList.clear();
         }
+
+        if (postingDebugTelemetry) postListStatus();
     }
 
     public boolean isRunning(Command command) {
@@ -207,14 +240,18 @@ public class CommandScheduler {
         return commandExecutionList.isEmpty();
     }
 
-    public void postCommands(Telemetry telemetry) {
+    private void postListStatus() {
         for (Map.Entry<Mechanism, Command> entry : mechanismLockingCommandMap.entrySet()) {
             TelemetryHandler.getInstance().getTelemetry().addData(entry.getKey().toString() + "is bound by", entry.getValue().toString());
         }
+        for (Command command : loopedCommandList) {
+            TelemetryHandler.getInstance().getTelemetry().addData("Currently Attempting to Loop", command.toString());
+        }
         for (Command command : requestedAdditionList) {
-            for (Mechanism mechanism : command.getBoundMechanisms()) {
-                TelemetryHandler.getInstance().getTelemetry().addData(mechanism.toString(), "is bound by the requested : " + command.toString());
-            }
+            TelemetryHandler.getInstance().getTelemetry().addData("Currently Requesting", command.toString());
+        }
+        for (Command command : commandExecutionList) {
+            TelemetryHandler.getInstance().getTelemetry().addData("Currently Executing", command.toString());
         }
     }
 
@@ -256,52 +293,54 @@ public class CommandScheduler {
                 buttonStateChange = ButtonStateChange.NO_CHANGE;
             }
 
-            switch (rule) {
-                case WHEN_PRESSED:
-                    if (buttonStateChange == ButtonStateChange.PRESSED) {
-                        if (running) {
-                            requestCommandTermination(wrappedCommand);
-                        }
-                        requestCommandExecution(wrappedCommand);
-                        running = true;
-                    }
-                    break;
-
-                case WHEN_RELEASED:
-                    if (buttonStateChange == ButtonStateChange.RELEASED) {
-                        if (running) {
-                            requestCommandTermination(wrappedCommand);
-                        }
-                        requestCommandExecution(wrappedCommand);
-                        running = true;
-                    }
-                    break;
-
-                case WHILE_HELD:
-                    if (buttonStateChange == ButtonStateChange.PRESSED) {
-                        requestCommandExecution(wrappedCommand);
-                        running = true;
-                    } else if (running && buttonStateChange == ButtonStateChange.RELEASED) {
-                        requestCommandTermination(wrappedCommand);
-                        running = false;
-                    }
-                    break;
-
-                case TOGGLE_WHEN_PRESSED:
-                    if (running) {
-                        if (!isRunning(wrappedCommand)) running = false;
-                    }
-
-                    if (buttonStateChange == ButtonStateChange.PRESSED) {
-                        if (running) {
-                            requestCommandTermination(wrappedCommand);
-                            running = false;
-                        } else {
+            if (checkingCommands) {
+                switch (rule) {
+                    case WHEN_PRESSED:
+                        if (buttonStateChange == ButtonStateChange.PRESSED) {
+                            if (running) {
+                                requestCommandTermination(wrappedCommand);
+                            }
                             requestCommandExecution(wrappedCommand);
                             running = true;
                         }
-                    }
-                    break;
+                        break;
+
+                    case WHEN_RELEASED:
+                        if (buttonStateChange == ButtonStateChange.RELEASED) {
+                            if (running) {
+                                requestCommandTermination(wrappedCommand);
+                            }
+                            requestCommandExecution(wrappedCommand);
+                            running = true;
+                        }
+                        break;
+
+                    case WHILE_HELD:
+                        if (buttonStateChange == ButtonStateChange.PRESSED) {
+                            requestCommandExecution(wrappedCommand);
+                            running = true;
+                        } else if (running && buttonStateChange == ButtonStateChange.RELEASED) {
+                            requestCommandTermination(wrappedCommand);
+                            running = false;
+                        }
+                        break;
+
+                    case TOGGLE_WHEN_PRESSED:
+                        if (running) {
+                            if (!isRunning(wrappedCommand)) running = false;
+                        }
+
+                        if (buttonStateChange == ButtonStateChange.PRESSED) {
+                            if (running) {
+                                requestCommandTermination(wrappedCommand);
+                                running = false;
+                            } else {
+                                requestCommandExecution(wrappedCommand);
+                                running = true;
+                            }
+                        }
+                        break;
+                }
             }
 
             if (wrappedCommand.isFinished()) {

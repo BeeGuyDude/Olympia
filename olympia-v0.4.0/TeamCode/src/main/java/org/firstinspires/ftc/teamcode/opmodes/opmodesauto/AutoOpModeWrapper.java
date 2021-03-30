@@ -42,8 +42,5 @@ abstract class AutoOpModeWrapper extends OpMode {
     public void stop() {
         scheduler.end();
         scheduler.scrubCommands();
-
-        autoStop();
     }
-    public abstract void autoStop();
 }

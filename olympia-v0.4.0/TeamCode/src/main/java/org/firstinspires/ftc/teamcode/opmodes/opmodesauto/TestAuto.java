@@ -9,16 +9,13 @@ public class TestAuto extends AutoOpModeWrapper {
 
     @Override
     public void autoInit() {
-        scheduler.add(new TestTelemetryCommand(telemetry));
+//        scheduler.enableDebugTelemetry();                   //Uncomment to get the command list from hell
+
     }
 
     @Override
     public void autoLoop() {
-        scheduler.add(new TestSecondTelemetryCommand(telemetry));
-    }
-
-    @Override
-    public void autoStop() {
 
     }
+
 }

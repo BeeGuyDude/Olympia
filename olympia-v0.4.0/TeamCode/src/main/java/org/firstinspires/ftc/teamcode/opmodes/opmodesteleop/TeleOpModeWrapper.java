@@ -139,11 +139,8 @@ abstract class TeleOpModeWrapper extends OpMode {
 
     @Override
     public void stop() {
-        scheduler.end();
         scheduler.stopCheckingCommands();
+        scheduler.end();
         scheduler.scrubCommands();
-
-        teleOpStop();
     }
-    public abstract void teleOpStop();
 }

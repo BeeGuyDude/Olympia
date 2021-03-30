@@ -231,7 +231,7 @@ public class CommandScheduler {
     }
 
     public void end() {
-        for (Command command : loopedCommandList) {
+        for (Command command : commandExecutionList) {
             command.end();
         }
     }

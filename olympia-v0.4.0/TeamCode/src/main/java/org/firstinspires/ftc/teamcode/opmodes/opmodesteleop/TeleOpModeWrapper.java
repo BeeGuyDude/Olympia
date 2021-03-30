@@ -3,16 +3,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.framework.TelemetryHandler;
+import org.firstinspires.ftc.teamcode.framework.Timekeeper;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
+
+import java.sql.Time;
 
 import static org.firstinspires.ftc.teamcode.framework.util.Constants.*;
 
 abstract class TeleOpModeWrapper extends OpMode {
 
-    private double previousCycleTime = 0;
     CommandScheduler scheduler = new CommandScheduler();
+    private Timekeeper timekeeper = new Timekeeper();
 
     //Driver
     public Button DriverAButton;
@@ -117,8 +120,8 @@ abstract class TeleOpModeWrapper extends OpMode {
             scheduler.run();
         }
 
-        scheduler.beginCheckingCommands();
         scheduler.scrubCommands();
+        scheduler.beginCheckingCommands();
 
         teleOpLoop();
         MechanismEngine.getInstance().initializeMechanisms();
@@ -130,9 +133,9 @@ abstract class TeleOpModeWrapper extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
-        previousCycleTime = getRuntime();
-
+        telemetry.addData("Cycle Time", timekeeper.getCycleTime() + "ms");
+        telemetry.addData("Average Cycle Time", timekeeper.getAverageCycleTime() + "ms");
+        timekeeper.update(getRuntime());
         scheduler.run();
     }
     public abstract void teleOpLoop();

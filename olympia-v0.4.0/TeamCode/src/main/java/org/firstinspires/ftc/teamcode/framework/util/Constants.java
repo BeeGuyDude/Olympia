@@ -53,6 +53,9 @@ public class Constants {
         RELEASED
     }
 
+    //Timekeeper Stuff
+    public static final int CYCLE_TIME_HISTORY_LENGTH = 200;
+
     //Test Mechanism stuff
     public static final double INTAKE_EXTENDED_POSITION = 1;
     public static final double INTAKE_RETRACTED_POSITION = 0;

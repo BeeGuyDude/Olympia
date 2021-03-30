@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.opmodesauto;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commands.*;
+import org.firstinspires.ftc.teamcode.framework.Timekeeper;
 import org.firstinspires.ftc.teamcode.mechanisms.MechanismEngine;
 
 abstract class AutoOpModeWrapper extends OpMode {
 
-    private double previousCycleTime = 0;
     CommandScheduler scheduler = new CommandScheduler();
+    private Timekeeper timekeeper = new Timekeeper();
 
     @Override
     public void init() {
@@ -31,8 +32,9 @@ abstract class AutoOpModeWrapper extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Cycle time", (getRuntime() - previousCycleTime)*1000 + "ms");
-        previousCycleTime = getRuntime();
+        telemetry.addData("Cycle time", timekeeper.getCycleTime() + "ms");
+        telemetry.addData("Average Cycle Time", timekeeper.getAverageCycleTime() + "ms");
+        timekeeper.update(getRuntime());
 
         scheduler.run();
     }

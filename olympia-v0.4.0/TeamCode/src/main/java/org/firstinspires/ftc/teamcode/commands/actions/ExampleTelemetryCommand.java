@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 public class ExampleTelemetryCommand extends Command {
     private Telemetry localTelem;
 
+    //Note that this command doesn't lock any mechanisms, as it doesn't need any; we just give it a telemetry reference as necessary.
     public ExampleTelemetryCommand(Telemetry testTelem) {
         this.localTelem = testTelem;
     }

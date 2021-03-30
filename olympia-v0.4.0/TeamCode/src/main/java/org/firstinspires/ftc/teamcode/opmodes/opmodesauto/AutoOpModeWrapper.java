@@ -43,6 +43,8 @@ abstract class AutoOpModeWrapper extends OpMode {
     @Override
     public void stop() {
         scheduler.end();
+
+        //I know it removes them automatically when the OpMode ends, I'm just paranoid.
         scheduler.scrubCommands();
     }
 }

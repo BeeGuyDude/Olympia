@@ -16,6 +16,7 @@ public class ExampleToggleServoPosition extends Command {
         localIntake.toggle();
     }
 
+    //Because this runs only once, make sure nothing will override it after it finishes.
     public boolean isFinished() {
         return true;
     }

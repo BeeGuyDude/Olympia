@@ -62,6 +62,7 @@ abstract class TeleOpModeWrapper extends OpMode {
     @Override
     public void init() {
 
+        //I wanted to do this in line with the declarations, but FTC is dumb and sets the Gamepad references to null until the init() block so here we are in constructor hell
         DriverAButton = new Button(gamepad1, ButtonID.A_BUTTON, scheduler);
         DriverBButton = new Button(gamepad1, ButtonID.B_BUTTON, scheduler);
         DriverXButton = new Button(gamepad1, ButtonID.X_BUTTON, scheduler);
@@ -142,6 +143,8 @@ abstract class TeleOpModeWrapper extends OpMode {
     public void stop() {
         scheduler.stopCheckingCommands();
         scheduler.end();
+
+        //I know it removes them when the OpMode stops, I'm just paranoid.
         scheduler.scrubCommands();
     }
 }

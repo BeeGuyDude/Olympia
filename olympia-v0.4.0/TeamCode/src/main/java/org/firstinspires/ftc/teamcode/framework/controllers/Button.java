@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.commands.basecommands.Command;
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 
-import static org.firstinspires.ftc.teamcode.framework.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*;
 
 public class Button {
 

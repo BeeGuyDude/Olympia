@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.MechanismEngine;
 
-import static org.firstinspires.ftc.teamcode.framework.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*;
 
 abstract class TeleOpModeWrapper extends OpMode {
 

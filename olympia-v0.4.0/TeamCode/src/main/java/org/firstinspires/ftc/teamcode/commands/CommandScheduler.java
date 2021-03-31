@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.framework.util.TelemetryHandler;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.Mechanism;
 
-import static org.firstinspires.ftc.teamcode.framework.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,19 +42,12 @@ public class CommandScheduler {
     }
 
     public void scrubCommands() {
-        for (Command command : loopedCommandList) {
-            commandPriorityMap.remove(command);
-        }
-        loopedCommandList.clear();
-
-        for (Command command : requestedAdditionList) {
-            commandPriorityMap.remove(command);
-        }
         requestedAdditionList.clear();
+        loopedCommandList.clear();
+        commandPriorityMap.clear();
 
-        for (Command command : commandExecutionList) {
-            commandPriorityMap.remove(command);
-        }
+        mechanismLockingCommandMap.clear();
+
         commandExecutionList.clear();
         commandInitializedMap.clear();
 

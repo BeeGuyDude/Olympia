@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.commands.basecommands;
 
-import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommandGroup extends Command {
     private enum commandType {
@@ -10,20 +10,22 @@ public class CommandGroup extends Command {
         PARALLEL
     }
 
-    private ArrayList<Command> commandList;
-    private ArrayList<commandType> commandTypeList;
-    private ArrayList<Boolean> commandInitialized;
+    private ArrayList<Command> commandList = new ArrayList<Command>();
+    private Map<Command, commandType> commandTypeMap = new HashMap<Command, commandType>();
+    private Map<Command, Boolean> commandInitializedMap = new HashMap<Command, Boolean>();
+
+    private ArrayList<Command> removedCommandList = new ArrayList<Command>();
 
     public void addParallel(Command command) {
         commandList.add(command);
-        commandTypeList.add(commandType.PARALLEL);
-        commandInitialized.add(false);
+        commandTypeMap.put(command, commandType.PARALLEL);
+        commandInitializedMap.put(command, false);
     }
 
     public void addSequential(Command command) {
         commandList.add(command);
-        commandTypeList.add(commandType.SEQUENTIAL);
-        commandInitialized.add(false);
+        commandTypeMap.put(command, commandType.SEQUENTIAL);
+        commandInitializedMap.put(command, false);
     }
 
     public void initialize() {}
@@ -32,14 +34,14 @@ public class CommandGroup extends Command {
         if (!commandList.isEmpty()) {
             for (Command command : commandList) {
                 if (commandList.indexOf(command) != 0) {
-                    if (commandTypeList.get(commandList.indexOf(command) - 1) == commandType.SEQUENTIAL) {
+                    if (commandTypeMap.get(commandList.get(commandList.indexOf(command) - 1)) == commandType.SEQUENTIAL) {
                         break;
                     }
                 }
 
-                if (commandInitialized.get(commandList.indexOf(command)) == false) {
+                if (commandInitializedMap.get(command) == false) {
                     command.initialize();
-                    commandInitialized.set(commandList.indexOf(command), true);
+                    commandInitializedMap.put(command, true);
                 }
 
                 command.execute();
@@ -47,11 +49,15 @@ public class CommandGroup extends Command {
                 if (command.isFinished()) {
                     command.end();
 
-                    commandTypeList.remove(commandList.indexOf(command));
-                    commandInitialized.remove(commandList.indexOf(command));
-                    commandList.remove(command);
+                    removedCommandList.add(command);
                 }
             }
+
+            for (Command removedCommand : removedCommandList) {
+                commandTypeMap.remove(removedCommand);
+                commandInitializedMap.remove(removedCommand);
+            }
+            commandList.removeAll(removedCommandList);
         }
     }
 
@@ -61,7 +67,7 @@ public class CommandGroup extends Command {
 
     public void end() {
         for (Command command : commandList) {
-            command.end();
+            if (commandInitializedMap.get(command) == true) command.end();
         }
     }
 }

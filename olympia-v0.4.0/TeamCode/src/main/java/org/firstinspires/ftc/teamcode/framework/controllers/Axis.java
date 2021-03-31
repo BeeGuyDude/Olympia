@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.framework.controllers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import static org.firstinspires.ftc.teamcode.framework.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*;
 
 public class Axis {
     private Gamepad gamepad;

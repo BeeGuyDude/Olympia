@@ -22,6 +22,8 @@ public class ExampleExtendServo extends Command {
         localServoMechanism.extend();
     }
 
+    //This command returns false for isFinished() because the assumption is it's put on a toggleWhenPressed or a whileHeld like in ExampleTeleOpMode
+    //If you're trying to use a whenPressed or whenReleased, make sure the finished condition actually returns true at some point, or it'll lock the mechanism indefinitely
     public boolean isFinished() {
         return false;
     }

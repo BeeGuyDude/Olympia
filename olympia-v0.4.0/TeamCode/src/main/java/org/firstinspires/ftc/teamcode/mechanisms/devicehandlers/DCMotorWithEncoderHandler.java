@@ -5,30 +5,38 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-import static org.firstinspires.ftc.teamcode.framework.Constants.*;
+import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*;
 
 public class DCMotorWithEncoderHandler {
     private boolean flipped;
+    private boolean brakeMode;
     private String deviceName;
+
     private DcMotor motor;
 
     private double previousMotorPower = 0;
 
-    public DCMotorWithEncoderHandler(String deviceName, boolean flipped) {
+    public DCMotorWithEncoderHandler(String deviceName, boolean flipped, boolean brakeMode) {
         this.deviceName = deviceName;
         this.flipped = flipped;
+        this.brakeMode = brakeMode;
     }
 
     public void init(HardwareMap hwMap) {
         motor = hwMap.get(DcMotor.class, deviceName);
 
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (flipped) {
             motor.setDirection(DcMotorSimple.Direction.REVERSE);
         } else {
             motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+
+        if (brakeMode) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }
 

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-public class PIDHandler { //Only actually includes PID, no F
+public class PIDHandler { //Only actually includes PID, not VAJSCMF
     private double kP = 0;
     private double kI = 0;
     private double kD = 0;

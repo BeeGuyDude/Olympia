@@ -9,6 +9,10 @@ public class PIDHandler { //Only actually includes PID, no F
 
     private boolean D_ran = false;
 
+    public PIDHandler(double kP, double kI, double kD) {
+        setConstants(kP, kI, kD);
+    }
+
     public void setConstants(double kP, double kI, double kD) {
         this.kP = kP;
         this.kI = kI;

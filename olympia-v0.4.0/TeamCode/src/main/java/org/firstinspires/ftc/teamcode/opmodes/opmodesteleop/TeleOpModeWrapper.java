@@ -112,6 +112,8 @@ abstract class TeleOpModeWrapper extends OpMode {
         TelemetryHandler.getInstance().setTelemetry(telemetry);
 
         teleOpInit();
+
+        MechanismEngine.getInstance().refreshInstance();
         MechanismEngine.getInstance().setHardwareMap(hardwareMap);
         MechanismEngine.getInstance().initializeMechanisms();
 

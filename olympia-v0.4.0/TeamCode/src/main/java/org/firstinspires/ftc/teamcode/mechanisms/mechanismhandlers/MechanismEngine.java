@@ -17,6 +17,13 @@ public class MechanismEngine {
         return engineInstance;
     }
 
+    public void refreshInstance() {
+        rawMechanismMap.clear();
+        initializedMechanisms.clear();
+
+        localHardwareMap = null;
+    }
+
     //Mechanism table handling
     private Map<Class, Object> rawMechanismMap = new HashMap<Class, Object>();
     public <T> T getMechanism(Class<T> mechanismKey) {

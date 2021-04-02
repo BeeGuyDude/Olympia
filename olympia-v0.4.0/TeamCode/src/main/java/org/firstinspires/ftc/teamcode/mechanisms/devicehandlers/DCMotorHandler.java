@@ -15,6 +15,7 @@ public class DCMotorHandler {
     private DcMotor motor;
 
     private double previousMotorPower = 0;
+    private double direction = 1;
 
     public DCMotorHandler(String deviceName, boolean flipped, boolean brakeMode) {
         this.deviceName = deviceName;
@@ -27,11 +28,7 @@ public class DCMotorHandler {
 
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (flipped) {
-            motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        } else {
-            motor.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
+        if (flipped) direction = 1;
 
         if (brakeMode) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,7 +39,7 @@ public class DCMotorHandler {
 
     public void setPower(double motorPower) {
         if (motorPower != previousMotorPower) {
-            motor.setPower(Range.clip(motorPower, MOTOR_WRAPPER_LOWER_SPEED_BOUND, MOTOR_WRAPPER_UPPER_SPEED_BOUND));
+            motor.setPower(direction * Range.clip(motorPower, MOTOR_WRAPPER_LOWER_SPEED_BOUND, MOTOR_WRAPPER_UPPER_SPEED_BOUND));
             previousMotorPower = motorPower;
         }
     }

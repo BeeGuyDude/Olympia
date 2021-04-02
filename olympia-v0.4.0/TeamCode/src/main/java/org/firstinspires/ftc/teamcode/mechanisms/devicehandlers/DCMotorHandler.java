@@ -28,7 +28,7 @@ public class DCMotorHandler {
 
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (flipped) direction = 1;
+        if (flipped) direction = -1;
 
         if (brakeMode) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

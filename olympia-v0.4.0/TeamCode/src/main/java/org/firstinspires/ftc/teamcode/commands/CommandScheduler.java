@@ -93,10 +93,6 @@ public class CommandScheduler {
         }
 
         if (commandExecutionList.contains(command)) {
-            if (commandInitializedMap.get(command) == true) {
-                command.end();
-            }
-
             if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Attempted to remove from Execution List");
 
             for (Mechanism boundMechanism : command.getBoundMechanisms()) if (mechanismLockingCommandMap.containsKey(boundMechanism)) mechanismLockingCommandMap.remove(boundMechanism);
@@ -198,13 +194,14 @@ public class CommandScheduler {
                 command.execute();
 
                 if (command.isFinished()) {
-                    command.end();
-
                     removedCommandList.add(command);
                 }
             }
 
             for (Command removedCommand : removedCommandList) {
+                if (commandInitializedMap.get(removedCommand) == true) {
+                    removedCommand.end();
+                }
                 commandInitializedMap.remove(removedCommand);
                 for (Mechanism boundMechanism : removedCommand.getBoundMechanisms()) {
                     if (mechanismLockingCommandMap.containsKey(boundMechanism)) mechanismLockingCommandMap.remove(boundMechanism);

@@ -9,15 +9,15 @@ import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.MechanismEngi
 abstract class AutoOpModeWrapper extends OpMode {
 
     CommandScheduler scheduler = new CommandScheduler();
-    private Timekeeper timekeeper = new Timekeeper();
+    Timekeeper timekeeper = new Timekeeper();
 
     @Override
     public void init() {
         TelemetryHandler.getInstance().setTelemetry(telemetry);
+        MechanismEngine.getInstance().refreshInstance();
 
         autoInit();
 
-        MechanismEngine.getInstance().refreshInstance();
         MechanismEngine.getInstance().setHardwareMap(hardwareMap);
         MechanismEngine.getInstance().initializeMechanisms();
 

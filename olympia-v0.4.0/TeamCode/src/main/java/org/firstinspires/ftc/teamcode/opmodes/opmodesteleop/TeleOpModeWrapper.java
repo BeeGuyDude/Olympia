@@ -13,7 +13,7 @@ import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*
 abstract class TeleOpModeWrapper extends OpMode {
 
     CommandScheduler scheduler = new CommandScheduler();
-    private Timekeeper timekeeper = new Timekeeper();
+    Timekeeper timekeeper = new Timekeeper();
 
     //Driver
     public Button DriverAButton;
@@ -110,10 +110,10 @@ abstract class TeleOpModeWrapper extends OpMode {
         gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
 
         TelemetryHandler.getInstance().setTelemetry(telemetry);
+        MechanismEngine.getInstance().refreshInstance();
 
         teleOpInit();
 
-        MechanismEngine.getInstance().refreshInstance();
         MechanismEngine.getInstance().setHardwareMap(hardwareMap);
         MechanismEngine.getInstance().initializeMechanisms();
 

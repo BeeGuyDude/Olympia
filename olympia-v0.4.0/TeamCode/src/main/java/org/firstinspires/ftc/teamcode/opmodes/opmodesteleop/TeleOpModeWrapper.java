@@ -15,6 +15,7 @@ abstract class TeleOpModeWrapper extends OpMode {
     CommandScheduler scheduler = new CommandScheduler();
     Timekeeper timekeeper = new Timekeeper();
 
+    //I apologize for this abomination
     //Driver
     public Button DriverAButton;
     public Button DriverBButton;

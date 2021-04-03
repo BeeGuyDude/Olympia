@@ -71,6 +71,7 @@ public class CommandScheduler {
 
     public void requestCommandExecution(Command command) {
         if (!requestedAdditionList.contains(command)) {
+            //Wipe commands that have been requested but not executed yet that conflict mechanisms with new request
             ArrayList<Command> requestedListRemovalList = new ArrayList<Command>();
             for (Command cachedCommand : requestedAdditionList) {
                 if (!command.getBoundMechanisms().isEmpty()) {
@@ -85,6 +86,7 @@ public class CommandScheduler {
             if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Requested Execution for", command.toString());
             requestedAdditionList.add(command);
 
+            //Command priorities never get deleted in case they get re-added
             if (!commandPriorityMap.containsKey(command)) commandPriorityMap.put(command, CommandPriority.HIGH);
 
             requestedAdditionList.removeAll(requestedListRemovalList);
@@ -94,6 +96,7 @@ public class CommandScheduler {
 
     public void requestCommandTermination(Command command) {
         if (requestedAdditionList.contains(command)) {
+            //Mechanisms are not bound until execution, so wiping mechanism binding list isn't necessary here
             if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(command.toString(), "Removed from request list");
             requestedAdditionList.remove(command);
         }
@@ -117,6 +120,7 @@ public class CommandScheduler {
                         passedCheck = false;
                     }
 
+                    //Logic kept here for debug purposes despite the fact that looped commands will only ever have LOW priority as of 1.0.0
                     if (!command.getBoundMechanisms().isEmpty()) {
                         for (Mechanism mechanism : command.getBoundMechanisms()) {
                             if (mechanismLockingCommandMap.containsKey(mechanism)) {
@@ -131,6 +135,7 @@ public class CommandScheduler {
 
                     if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Did " + command.toString() + " pass its check?", passedCheck);
                     if (passedCheck) {
+                        //Wipe commands bound to mechanisms requested command requires
                         for (Mechanism boundMechanism : command.getBoundMechanisms()) {
                             if (mechanismLockingCommandMap.containsKey(boundMechanism) && mechanismLockingCommandMap.get(boundMechanism) != null) {
                                 mechanismLockingCommandMap.get(boundMechanism).end();
@@ -138,6 +143,7 @@ public class CommandScheduler {
                                 commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
                             }
 
+                            //Bind all mechanisms the command requires to it
                             mechanismLockingCommandMap.put(boundMechanism, command);
                             if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + "now bound to", command.toString());
                         }
@@ -154,6 +160,7 @@ public class CommandScheduler {
                 for (Command command : requestedAdditionList) {
                     boolean passedCheck = true;
 
+                    //Logic kept here for debug purposes despite the fact that requested commands will only ever have HIGH priority as of 1.0.0
                     if (!command.getBoundMechanisms().isEmpty()) {
                         for (Mechanism mechanism : command.getBoundMechanisms()) {
                             if (mechanismLockingCommandMap.containsKey(mechanism)) {
@@ -168,6 +175,7 @@ public class CommandScheduler {
 
                     if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData("Did " + command.toString() + " pass its check?", passedCheck);
                     if (passedCheck) {
+                        //Wipe commands bound to mechanisms requested command requires
                         for (Mechanism boundMechanism : command.getBoundMechanisms()) {
                             if (mechanismLockingCommandMap.containsKey(boundMechanism)) {
                                 mechanismLockingCommandMap.get(boundMechanism).end();
@@ -175,6 +183,7 @@ public class CommandScheduler {
                                 commandExecutionList.remove(mechanismLockingCommandMap.get(boundMechanism));
                             }
 
+                            //Bind all mechanisms the command requires to it
                             mechanismLockingCommandMap.put(boundMechanism, command);
                             if (postingDebugTelemetry) TelemetryHandler.getInstance().getTelemetry().addData(boundMechanism.toString() + " now bound to ", command.toString());
                         }
@@ -209,9 +218,7 @@ public class CommandScheduler {
                     removedCommand.end();
                 }
                 commandInitializedMap.remove(removedCommand);
-                for (Mechanism boundMechanism : removedCommand.getBoundMechanisms()) {
-                    if (mechanismLockingCommandMap.containsKey(boundMechanism)) mechanismLockingCommandMap.remove(boundMechanism);
-                }
+                for (Mechanism boundMechanism : removedCommand.getBoundMechanisms()) if (mechanismLockingCommandMap.containsKey(boundMechanism)) mechanismLockingCommandMap.remove(boundMechanism);
             }
 
             commandExecutionList.removeAll(removedCommandList);
@@ -235,6 +242,7 @@ public class CommandScheduler {
         return commandExecutionList.isEmpty();
     }
 
+    //Literally just dump all important stored information into the telemetry
     private void postListStatus() {
         for (Map.Entry<Mechanism, Command> entry : mechanismLockingCommandMap.entrySet()) {
             TelemetryHandler.getInstance().getTelemetry().addData(entry.getKey().toString() + "is bound by", entry.getValue().toString());
@@ -250,12 +258,17 @@ public class CommandScheduler {
         }
     }
 
+    //Factory method for internal ButtonCommand
     public void addButtonCommand(Button button, ButtonStateRule rule, Command wrappedCommand) {
         ButtonCommand localButtonCommand = new ButtonCommand(button, rule, wrappedCommand);
         commandExecutionList.add(localButtonCommand);
         commandInitializedMap.put(localButtonCommand, false);
     }
 
+    /*
+    In previous versions, ButtonCommand was external; I chose to make it internal after a logic rework that basically turned it into a command request factory,
+    requiring it to have a CommandScheduler instance despite being instantiated in the same one, creating a giant terrible spiral of chain of command
+    */
     private class ButtonCommand extends Command {
 
         private Command wrappedCommand;
@@ -280,6 +293,7 @@ public class CommandScheduler {
         public void execute() {
             buttonPressed = button.get();
 
+            //Update button state for logic
             if (buttonPressed && !buttonPressedPreviously) {
                 buttonStateChange = ButtonStateChange.PRESSED;
             } else if (!buttonPressed && buttonPressedPreviously) {
@@ -288,6 +302,7 @@ public class CommandScheduler {
                 buttonStateChange = ButtonStateChange.NO_CHANGE;
             }
 
+            //Based on condition, request and/or remove the internal command passed in the constructor to the ButtonCommand from the execution list.
             if (checkingCommands) {
                 switch (rule) {
                     case WHEN_PRESSED:
@@ -322,7 +337,7 @@ public class CommandScheduler {
 
                     case TOGGLE_WHEN_PRESSED:
                         if (running) {
-                            if (!isRunning(wrappedCommand)) running = false;
+                            running = isRunning(wrappedCommand);
                         }
 
                         if (buttonStateChange == ButtonStateChange.PRESSED) {

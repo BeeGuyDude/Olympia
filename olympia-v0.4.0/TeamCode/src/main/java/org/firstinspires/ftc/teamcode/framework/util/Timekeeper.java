@@ -42,4 +42,8 @@ public class Timekeeper {
     public double getAverageCycleTime() {
         return averageCycleTime*1000;
     }
+
+    public double getRuntime() {
+        return currentCycleTime;
+    }
 }

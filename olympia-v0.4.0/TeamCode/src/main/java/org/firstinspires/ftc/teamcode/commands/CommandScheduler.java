@@ -59,8 +59,14 @@ public class CommandScheduler {
     }
 
     public void add(Command command) {
-        loopedCommandList.add(command);
-        commandPriorityMap.put(command, CommandPriority.LOW);
+        if (checkingCommands) {
+            loopedCommandList.add(command);
+            commandPriorityMap.put(command, CommandPriority.LOW);
+        } else {
+            commandExecutionList.add(command);
+            commandPriorityMap.put(command, CommandPriority.LOW);
+            commandInitializedMap.put(command, false);
+        }
     }
 
     public void requestCommandExecution(Command command) {

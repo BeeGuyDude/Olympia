@@ -116,7 +116,6 @@ abstract class TeleOpModeWrapper extends OpMode {
         teleOpInit();
 
         MechanismEngine.getInstance().setHardwareMap(hardwareMap);
-        MechanismEngine.getInstance().initializeMechanisms();
 
         while (!scheduler.isEmpty()) {
             scheduler.run();
@@ -126,8 +125,6 @@ abstract class TeleOpModeWrapper extends OpMode {
         scheduler.beginCheckingCommands();
 
         teleOpLoop();
-        MechanismEngine.getInstance().initializeMechanisms();
-        //yes I know it does it twice, you don't know if some mechanisms aren't used yet until the loop portion
 
         telemetry.addData("Initialization phase", "Succeeded.");
     }

@@ -14,11 +14,11 @@ abstract class AutoOpModeWrapper extends OpMode {
     @Override
     public void init() {
         TelemetryHandler.getInstance().setTelemetry(telemetry);
+
         MechanismEngine.getInstance().refreshInstance();
+        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
 
         autoInit();
-
-        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
 
         while (!scheduler.isEmpty()) {
             scheduler.run();

@@ -47,7 +47,7 @@ abstract class TeleOpModeWrapper extends OpMode {
     public Button OperatorRightBumper;
     public Button OperatorDPadUp;
     public Button OperatorDPadRight;
-    public Button OperatorDPdDown;
+    public Button OperatorDPadDown;
     public Button OperatorDPadLeft;
     public Button OperatorBackButton;
     public Button OperatorStartButton;
@@ -94,7 +94,7 @@ abstract class TeleOpModeWrapper extends OpMode {
         OperatorRightBumper = new Button(gamepad2, ButtonID.RIGHT_BUMPER, scheduler);
         OperatorDPadUp = new Button(gamepad2, ButtonID.UP, scheduler);
         OperatorDPadRight = new Button(gamepad2, ButtonID.RIGHT, scheduler);
-        OperatorDPdDown = new Button(gamepad2, ButtonID.DOWN, scheduler);
+        OperatorDPadDown = new Button(gamepad2, ButtonID.DOWN, scheduler);
         OperatorDPadLeft = new Button(gamepad2, ButtonID.LEFT, scheduler);
         OperatorBackButton = new Button(gamepad2, ButtonID.BACK, scheduler);
         OperatorStartButton = new Button(gamepad2, ButtonID.START, scheduler);
@@ -111,11 +111,11 @@ abstract class TeleOpModeWrapper extends OpMode {
         gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
 
         TelemetryHandler.getInstance().setTelemetry(telemetry);
+
         MechanismEngine.getInstance().refreshInstance();
+        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
 
         teleOpInit();
-
-        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
 
         while (!scheduler.isEmpty()) {
             scheduler.run();

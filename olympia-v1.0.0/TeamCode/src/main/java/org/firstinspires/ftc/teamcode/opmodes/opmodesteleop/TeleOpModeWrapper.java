@@ -7,6 +7,13 @@ import org.firstinspires.ftc.teamcode.framework.util.Timekeeper;
 import org.firstinspires.ftc.teamcode.framework.controllers.Axis;
 import org.firstinspires.ftc.teamcode.framework.controllers.Button;
 import org.firstinspires.ftc.teamcode.mechanisms.mechanismhandlers.MechanismEngine;
+import org.opencv.core.Mat;
+import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import static org.firstinspires.ftc.teamcode.framework.util.FrameworkConstants.*;
 
@@ -47,7 +54,7 @@ abstract class TeleOpModeWrapper extends OpMode {
     public Button OperatorRightBumper;
     public Button OperatorDPadUp;
     public Button OperatorDPadRight;
-    public Button OperatorDPdDown;
+    public Button OperatorDPadDown;
     public Button OperatorDPadLeft;
     public Button OperatorBackButton;
     public Button OperatorStartButton;
@@ -59,9 +66,36 @@ abstract class TeleOpModeWrapper extends OpMode {
     public Axis OperatorRightYAxis;
     public Axis OperatorLeftTrigger;
     public Axis OperatorRightTrigger;
+    
+    private OpenCvPipeline cvPipeline = null;
+    public OpenCvWebcam camera = null;
+    
+    public final void initCvPipeline(String cameraName, int width, int height, boolean useMonitor) {
+        cvPipeline = new OpenCvPipeline() {
+            @Override public final synchronized Mat processFrame(Mat input) {
+                return TeleOpModeWrapper.this.cameraLoop(input);
+            }
+        };
+        if(useMonitor) {
+            int cameraMonitorViewId = hwmap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwmap.appContext.getPackageName());
+            camera = OpenCvCameraFactory.getInstance().createWebcam(hwmap.get(WebcamName.class,cameraName), cameraMonitorViewId);
+        } else {
+            camera = OpenCvCameraFactory.getInstance().createWebcam(hwmap.get(WebcamName.class,cameraName));
+        }
+        camera.setPipeline(cvPipeline);
+        webcam.setMillisecondsPermissionTimeout(250);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override public void onOpened() {
+                camera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+            }
+        });
+    }
+    public synchronized Mat cameraLoop(Mat input) {
+        //Do nothing by default
+    }
 
     @Override
-    public void init() {
+    public final void init() {
 
         //I wanted to do this in line with the declarations, but FTC is dumb and sets the Gamepad references to null until the init() block so here we are in constructor hell
         DriverAButton = new Button(gamepad1, ButtonID.A_BUTTON, scheduler);
@@ -94,7 +128,7 @@ abstract class TeleOpModeWrapper extends OpMode {
         OperatorRightBumper = new Button(gamepad2, ButtonID.RIGHT_BUMPER, scheduler);
         OperatorDPadUp = new Button(gamepad2, ButtonID.UP, scheduler);
         OperatorDPadRight = new Button(gamepad2, ButtonID.RIGHT, scheduler);
-        OperatorDPdDown = new Button(gamepad2, ButtonID.DOWN, scheduler);
+        OperatorDPadDown = new Button(gamepad2, ButtonID.DOWN, scheduler);
         OperatorDPadLeft = new Button(gamepad2, ButtonID.LEFT, scheduler);
         OperatorBackButton = new Button(gamepad2, ButtonID.BACK, scheduler);
         OperatorStartButton = new Button(gamepad2, ButtonID.START, scheduler);
@@ -111,12 +145,11 @@ abstract class TeleOpModeWrapper extends OpMode {
         gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
 
         TelemetryHandler.getInstance().setTelemetry(telemetry);
+
         MechanismEngine.getInstance().refreshInstance();
+        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
 
         teleOpInit();
-
-        MechanismEngine.getInstance().setHardwareMap(hardwareMap);
-        MechanismEngine.getInstance().initializeMechanisms();
 
         while (!scheduler.isEmpty()) {
             scheduler.run();
@@ -126,15 +159,13 @@ abstract class TeleOpModeWrapper extends OpMode {
         scheduler.beginCheckingCommands();
 
         teleOpLoop();
-        MechanismEngine.getInstance().initializeMechanisms();
-        //yes I know it does it twice, you don't know if some mechanisms aren't used yet until the loop portion
 
         telemetry.addData("Initialization phase", "Succeeded.");
     }
     public abstract void teleOpInit();
 
     @Override
-    public void loop() {
+    public final void loop() {
         telemetry.addData("Cycle Time", timekeeper.getCycleTime() + "ms");
         telemetry.addData("Average Cycle Time", timekeeper.getAverageCycleTime() + "ms");
         timekeeper.update(getRuntime());
@@ -143,10 +174,12 @@ abstract class TeleOpModeWrapper extends OpMode {
     public abstract void teleOpLoop();
 
     @Override
-    public void stop() {
+    public final void stop() {
         scheduler.stopCheckingCommands();
         scheduler.end();
-
+        if(camera!=null) {
+            camera.stopStreaming();
+        }
         //I know it removes them when the OpMode stops, I'm just paranoid.
         scheduler.scrubCommands();
     }

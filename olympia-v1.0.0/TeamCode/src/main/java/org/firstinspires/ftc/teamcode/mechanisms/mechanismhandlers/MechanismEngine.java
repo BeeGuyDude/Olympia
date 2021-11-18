@@ -19,8 +19,6 @@ public class MechanismEngine {
 
     public void refreshInstance() {
         rawMechanismMap.clear();
-        initializedMechanisms.clear();
-
         localHardwareMap = null;
     }
 
@@ -33,6 +31,13 @@ public class MechanismEngine {
             if (!getInstance().rawMechanismMap.containsKey(mechanismKey)) {
                 T obj = mechanismKey.newInstance();
                 getInstance().rawMechanismMap.put(mechanismKey, obj);
+
+                try {
+                    Mechanism castedMechanism = (Mechanism) obj;
+                    castedMechanism.init(localHardwareMap);
+                } catch (Exception e) {
+                    //Future TelemetryHandler warning for "Improper Mechanism Cast"
+                }
             }
             returnInstance = (T) getInstance().rawMechanismMap.get(mechanismKey);
         } catch (Exception e) {
@@ -43,26 +48,9 @@ public class MechanismEngine {
     }
 
     //Mechanism Initialization Handling
-    private ArrayList<Object> initializedMechanisms = new ArrayList<>();
     private HardwareMap localHardwareMap;
-
     public void setHardwareMap(HardwareMap hwmap) {
         this.localHardwareMap = hwmap;
-    }
-
-    public void initializeMechanisms() {
-        for (Object mechanism : rawMechanismMap.values()) {
-            Mechanism castedMechanism = (Mechanism) mechanism;
-
-            if (!initializedMechanisms.contains(mechanism)) {
-                try {
-                    castedMechanism.init(localHardwareMap);
-                    initializedMechanisms.add(mechanism);
-                } catch (Exception e) {
-                    //future telemetryhandler post for improper cast (signifying wrong object)
-                }
-            }
-        }
     }
 }
 

@@ -21,6 +21,3 @@ allprojects {
         jcenter()
     }
 }
-dependencies {
-    implementation 'org.openftc:easyopencv:1.5.1'
-}

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesteleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.framework.util.TelemetryHandler;
@@ -70,7 +71,7 @@ abstract class TeleOpModeWrapper extends OpMode {
     private OpenCvPipeline cvPipeline = null;
     public OpenCvWebcam camera = null;
     
-    public final void initCvPipeline(String cameraName, int width, int height, boolean useMonitor) {
+    public final void initCvPipeline(HardwareMap hwmap, String cameraName, int width, int height, boolean useMonitor) {
         cvPipeline = new OpenCvPipeline() {
             @Override public final synchronized Mat processFrame(Mat input) {
                 return TeleOpModeWrapper.this.cameraLoop(input);
@@ -83,15 +84,21 @@ abstract class TeleOpModeWrapper extends OpMode {
             camera = OpenCvCameraFactory.getInstance().createWebcam(hwmap.get(WebcamName.class,cameraName));
         }
         camera.setPipeline(cvPipeline);
-        webcam.setMillisecondsPermissionTimeout(250);
+        camera.setMillisecondsPermissionTimeout(250);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override public void onOpened() {
                 camera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addData("Camera streaming error with code",errorCode);
             }
         });
     }
     public synchronized Mat cameraLoop(Mat input) {
         //Do nothing by default
+        return null;
     }
 
     @Override
@@ -141,8 +148,8 @@ abstract class TeleOpModeWrapper extends OpMode {
         OperatorLeftTrigger = new Axis(gamepad2, AxisID.LEFT_TRIGGER);
         OperatorRightTrigger = new Axis(gamepad2, AxisID.RIGHT_TRIGGER);
 
-        gamepad1.setJoystickDeadzone(CONTROLLER_1_DEADZONE);
-        gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
+//        gamepad1.setJoystickDeadzone(CONTROLLER_1_DEADZONE); //I couldn't find a method for this under ftc 7.0.0
+//        gamepad2.setJoystickDeadzone(CONTROLLER_2_DEADZONE);
 
         TelemetryHandler.getInstance().setTelemetry(telemetry);
 
@@ -161,6 +168,7 @@ abstract class TeleOpModeWrapper extends OpMode {
         teleOpLoop();
 
         telemetry.addData("Initialization phase", "Succeeded.");
+        telemetry.addData("WARNING","unable to set controller deadzones in init.");
     }
     public abstract void teleOpInit();
 

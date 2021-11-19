@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.opmodesauto;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.commands.*;
 import org.firstinspires.ftc.teamcode.framework.util.TelemetryHandler;
@@ -20,7 +21,7 @@ abstract class AutoOpModeWrapper extends OpMode {
     CommandScheduler scheduler = new CommandScheduler();
     Timekeeper timekeeper = new Timekeeper();
     
-    public final void initCvPipeline(String cameraName, int width, int height, boolean useMonitor) {
+    public final void initCvPipeline(HardwareMap hwmap, String cameraName, int width, int height, boolean useMonitor) {
         cvPipeline = new OpenCvPipeline() {
             @Override public final synchronized Mat processFrame(Mat input) {
                 return AutoOpModeWrapper.this.cameraLoop(input);
@@ -33,15 +34,21 @@ abstract class AutoOpModeWrapper extends OpMode {
             camera = OpenCvCameraFactory.getInstance().createWebcam(hwmap.get(WebcamName.class,cameraName));
         }
         camera.setPipeline(cvPipeline);
-        webcam.setMillisecondsPermissionTimeout(250);
+        camera.setMillisecondsPermissionTimeout(250);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override public void onOpened() {
                 camera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addData("Camera streaming error with code",errorCode);
             }
         });
     }
     public synchronized Mat cameraLoop(Mat input) {
         //Do nothing by default
+        return null;
     }
     @Override
     public final void init() {
